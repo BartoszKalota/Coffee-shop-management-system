@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "airbnb-base",
+    "prettier"
+  ],
+  "env": {
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "plugins": [
+    "babel",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "class-methods-use-this": "warn",
+    "import/no-mutable-exports": "off",
+    "no-console": "off",
+    "no-underscore-dangle": "off"
+  }
+}

@@ -21,3 +21,29 @@ staffRouter.get('/:id', (req, res) => {
     monthlySalary: 4000
   });
 });
+
+staffRouter.post('/:id?', (req, res) => {
+  console.log(`POST Staff`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+staffRouter.put('/:id', (req, res) => {
+  console.log(`PUT Staff id:${req.params.id}`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+staffRouter.delete('/:id', (req ,res) => {
+  console.log(`DELETE Staff id:${req.params.id}`);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});

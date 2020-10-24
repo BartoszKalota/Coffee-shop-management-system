@@ -28,3 +28,29 @@ ordersRouter.get('/:id', (req, res) => {
     total: 4
   });
 });
+
+ordersRouter.post('/:id?', (req, res) => {
+  console.log(`POST Order`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+ordersRouter.put('/:id', (req, res) => {
+  console.log(`PUT Order id:${req.params.id}`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+ordersRouter.delete('/:id', (req ,res) => {
+  console.log(`DELETE Order id:${req.params.id}`);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});

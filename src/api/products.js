@@ -36,3 +36,29 @@ productsRouter.get('/:id', (req, res) => {
     categories: ['coffee']
   });
 });
+
+productsRouter.post('/:id?', (req, res) => {
+  console.log(`POST Product`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+productsRouter.put('/:id', (req, res) => {
+  console.log(`PUT Product id:${req.params.id}`);
+  console.log(req.body);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});
+
+productsRouter.delete('/:id', (req ,res) => {
+  console.log(`DELETE Product id:${req.params.id}`);
+  // temporary mock
+  res.json({
+    ok: true
+  });
+});

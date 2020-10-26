@@ -53,6 +53,8 @@ export default class Products {
   async deleteProduct(productId) {
     if (!productId) throw new Error(MISSING_DATA);
     if (productId !== this.mockProduct._id) throw new Error(NOT_FOUND);
-
+    // temporary mock
+    return true;
+    // console.log('Product deleted!');
   }
 }

@@ -72,10 +72,20 @@ productsRouter.put('/:id', async (req, res) => {
   }
 });
 
-productsRouter.delete('/:id', (req ,res) => {
+productsRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Product id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await products.deleteProduct(req.params.id);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });

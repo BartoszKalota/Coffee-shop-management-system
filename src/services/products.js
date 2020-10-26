@@ -72,9 +72,14 @@ export default class Products {
   async updateProduct(productId, productData) {
     if (!productId || !productData) throw new Error(MISSING_DATA);
     if (productId !== this.mockProduct._id) throw new Error(NOT_FOUND);
+    try {
+      await this.productUpdateSchema.validateAsync(productData);
+      console.log('Product updated!');
+    } catch (err) {
+      throw new Error(err);
+    }
     // temporary mock
     return true;
-    // console.log('Product updated!');
   }
 
   async deleteProduct(productId) {

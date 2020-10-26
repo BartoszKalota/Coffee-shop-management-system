@@ -53,13 +53,23 @@ productsRouter.post('/:id?', async (req, res) => {
   }
 });
 
-productsRouter.put('/:id', (req, res) => {
+productsRouter.put('/:id', async (req, res) => {
   console.log(`PUT Product id:${req.params.id}`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await products.updateProduct(req.params.id, req.body);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 productsRouter.delete('/:id', (req ,res) => {

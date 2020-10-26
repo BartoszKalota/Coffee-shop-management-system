@@ -41,9 +41,14 @@ export default class Staff {
   async addEmployee(employeeData) {
     if (!employeeData) throw new Error(MISSING_DATA);
     if (employeeData._id === this.mockEmployee._id) throw new Error(CONFLICT);
+    try {
+      await this.employeeSchema.validateAsync(employeeData);
+      console.log('Employee added!');
+    } catch (err) {
+      throw new Error(err);
+    }
     // temporary mock
     return true;
-    // console.log('Employee added!');
   }
 
   async updateEmployee(employeeId, employeeData) {

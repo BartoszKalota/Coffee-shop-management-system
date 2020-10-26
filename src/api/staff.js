@@ -22,13 +22,23 @@ staffRouter.get('/:id', async (req, res) => {
   }
 });
 
-staffRouter.post('/:id?', (req, res) => {
+staffRouter.post('/:id?', async (req, res) => {
   console.log(`POST Staff`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await staff.addEmployee( { _id: req.params.id , ...req.body } )
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === CONFLICT) {
+      res.status(409).send('Item already exists');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 staffRouter.put('/:id', (req, res) => {

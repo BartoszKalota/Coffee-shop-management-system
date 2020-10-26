@@ -1,5 +1,10 @@
 import express from 'express';
 
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import Products from '../services/products.js';
+
+const products = new Products();
+
 export const productsRouter = express.Router();
 
 productsRouter.get('/', (req, res) => {
@@ -8,17 +13,13 @@ productsRouter.get('/', (req, res) => {
   });
 });
 
-productsRouter.get('/all', (req, res) => {
+productsRouter.get('/all', async (req, res) => {
   console.log('GET Products - All available products');
-  // temporary mock
-  res.json([
-    {
-      product: 1
-    },
-    {
-      product: 2
-    }
-  ]);
+  try {
+    res.json(await products.getAllProducts());
+  } catch (err) {
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 productsRouter.get('/:id', (req, res) => {

@@ -1,8 +1,19 @@
 import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 
 export default class Products {
-  async getAllProducts() {
+  // temporary mock
+  mockAllProducts = [
+    {
+      product: 1
+    },
+    {
+      product: 2
+    }
+  ];
 
+  async getAllProducts() {
+    // temporary mock
+    return this.mockAllProducts;
   }
   
   async getProduct(productId) {

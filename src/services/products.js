@@ -10,6 +10,18 @@ export default class Products {
       product: 2
     }
   ];
+  // temporary mock
+  mockProduct = {
+    _id: '123',
+    name: 'Mocha',
+    brand: 'Bialetti',
+    lastOrderDate: new Date(),
+    unitPrice: 2,
+    supplierName: 'EuroKawexpol',
+    available: 10,
+    expirationDate: new Date(),
+    categories: ['coffee']
+  }
 
   async getAllProducts() {
     // temporary mock
@@ -18,7 +30,8 @@ export default class Products {
   
   async getProduct(productId) {
     if (!productId) throw new Error(MISSING_DATA);
-
+    // temporary mock
+    return this.mockProduct;
   }
 
   async addProduct(productData) {

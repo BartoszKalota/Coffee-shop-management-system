@@ -22,20 +22,16 @@ productsRouter.get('/all', async (req, res) => {
   }
 });
 
-productsRouter.get('/:id', (req, res) => {
+productsRouter.get('/:id', async (req, res) => {
   console.log(`GET Product id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    _id: '123',
-    name: 'Mocha',
-    brand: 'Bialetti',
-    lastOrderDate: new Date(),
-    unitPrice: 2,
-    supplierName: 'EuroKawexpol',
-    available: 10,
-    expirationDate: new Date(),
-    categories: ['coffee']
-  });
+  try {
+    res.json(await products.getProduct(req.params.id));
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 productsRouter.post('/:id?', (req, res) => {

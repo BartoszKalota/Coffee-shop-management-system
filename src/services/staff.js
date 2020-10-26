@@ -1,9 +1,20 @@
 import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 
 export default class Staff {
+  mockEmployee = {
+    _id: '1',
+    firstName: 'Jan',
+    lastName: 'Kowalski',
+    startedAt: new Date(),
+    rating: 4.5,
+    position: ['waiter'],
+    monthlySalary: 4000
+  };
+
   async getEmployee(employeeId) {
     if (!employeeId) throw new Error(MISSING_DATA);
-
+    // temporary mock
+    return this.mockEmployee;
   }
 
   async addEmployee(employeeData) {

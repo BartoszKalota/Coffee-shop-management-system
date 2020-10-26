@@ -1,5 +1,10 @@
 import express from 'express';
 
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import Staff from '../services/staff.js';
+
+const staff = new Staff();
+
 export const staffRouter = express.Router();
 
 staffRouter.get('/', (req, res) => {
@@ -8,18 +13,13 @@ staffRouter.get('/', (req, res) => {
   });
 });
 
-staffRouter.get('/:id', (req, res) => {
+staffRouter.get('/:id', async (req, res) => {
   console.log(`GET Staff id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    _id: '1',
-    firstName: 'Jan',
-    lastName: 'Kowalski',
-    startedAt: new Date(),
-    rating: 4.5,
-    position: ['waiter'],
-    monthlySalary: 4000
-  });
+  try {
+    res.json(await staff.getEmployee(req.params.id));
+  } catch (err) {
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 staffRouter.post('/:id?', (req, res) => {

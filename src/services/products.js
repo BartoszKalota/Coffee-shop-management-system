@@ -21,7 +21,7 @@ export default class Products {
     available: 10,
     expirationDate: new Date(),
     categories: ['coffee']
-  }
+  };
 
   async getAllProducts() {
     // temporary mock

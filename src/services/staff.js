@@ -30,12 +30,14 @@ export default class Staff {
     if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
     // temporary mock
     return true;
-    // console.log('Order updated!');
+    // console.log('Employee updated!');
   }
 
   async deleteEmployee(employeeId) {
     if (!employeeId) throw new Error(MISSING_DATA);
     if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
-
+    // temporary mock
+    return true;
+    // console.log('Employee deleted!');
   }
 }

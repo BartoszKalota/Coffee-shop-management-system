@@ -39,13 +39,23 @@ ordersRouter.post('/:id?', async (req, res) => {
   }
 });
 
-ordersRouter.put('/:id', (req, res) => {
+ordersRouter.put('/:id', async (req, res) => {
   console.log(`PUT Order id:${req.params.id}`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await Orders.updateOrder(req.params.id, req.body);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 ordersRouter.delete('/:id', (req ,res) => {

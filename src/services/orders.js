@@ -30,6 +30,7 @@ export default class Orders {
     if (orderData._id === this.mockOrder._id) throw new Error(CONFLICT);
     // temporary mock
     return true;
+    // console.log('Order added!');
   }
 
   async updateOrder(orderId, orderData) {
@@ -37,6 +38,7 @@ export default class Orders {
     if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
     // temporary mock
     return true;
+    // console.log('Order updated!');
   }
 
   async deleteOrder(orderId) {
@@ -44,5 +46,6 @@ export default class Orders {
     if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
     // temporary mock
     return true;
+    // console.log('Order deleted!');
   }
 }

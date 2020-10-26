@@ -3,6 +3,8 @@ import express from 'express';
 import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import Orders from '../services/orders.js';
 
+const orders = new Orders();
+
 export const ordersRouter = express.Router();
 
 ordersRouter.get('/', (req, res) => {
@@ -14,7 +16,7 @@ ordersRouter.get('/', (req, res) => {
 ordersRouter.get('/:id', async (req, res) => {
   console.log(`GET Order id:${req.params.id}`);
   try {
-    res.json(await Orders.getOrder(req.params.id));
+    res.json(await orders.getOrder(req.params.id));
   } catch (err) {
     res.status(500).send(`Server error: ${err.message}`);
   }
@@ -24,7 +26,7 @@ ordersRouter.post('/:id?', async (req, res) => {
   console.log(`POST Order`);
   console.log(req.body);
   try {
-    await Orders.addOrder( { _id: req.params.id , ...req.body } )
+    await orders.addOrder( { _id: req.params.id , ...req.body } )
     res.json({
       ok: true
     });
@@ -43,7 +45,7 @@ ordersRouter.put('/:id', async (req, res) => {
   console.log(`PUT Order id:${req.params.id}`);
   console.log(req.body);
   try {
-    await Orders.updateOrder(req.params.id, req.body);
+    await orders.updateOrder(req.params.id, req.body);
     res.json({
       ok: true
     });
@@ -61,7 +63,7 @@ ordersRouter.put('/:id', async (req, res) => {
 ordersRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Order id:${req.params.id}`);
   try {
-    await Orders.deleteOrder(req.params.id);
+    await orders.deleteOrder(req.params.id);
     res.json({
       ok: true
     });

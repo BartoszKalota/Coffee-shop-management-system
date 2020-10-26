@@ -1,3 +1,5 @@
+import Joi from '@hapi/joi';
+
 import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 
 export default class Products {
@@ -22,6 +24,26 @@ export default class Products {
     expirationDate: new Date(),
     categories: ['coffee']
   };
+
+  productUpdateSchema = Joi.object().keys({
+    _id: idSchema.required(),
+    name: Joi.string(),
+    brand: Joi.string(),
+    lastOrderDate: Joi.date(),
+    unitPrice: Joi.number(),
+    supplierName: Joi.string(),
+    available: Joi.number(),
+    expirationDate: Joi.date(),
+    categories: Joi.array().items(
+      Joi.string().valid('coffee'),
+      Joi.string().valid('food'),
+      Joi.string().valid('accessories'),
+      Joi.string().valid('equipment'),
+      Joi.string().valid('premium')
+    )
+  });
+
+  productSchema = this.productUpdateSchema.options({ presence: 'required' });
 
   async getAllProducts() {
     // temporary mock

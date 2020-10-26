@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import Orders from '../services/orders.js';
 
 export const ordersRouter = express.Router();
@@ -12,7 +13,6 @@ ordersRouter.get('/', (req, res) => {
 
 ordersRouter.get('/:id', async (req, res) => {
   console.log(`GET Order id:${req.params.id}`);
-  
   try {
     res.json(await Orders.getOrder(req.params.id));
   } catch (err) {
@@ -20,13 +20,23 @@ ordersRouter.get('/:id', async (req, res) => {
   }
 });
 
-ordersRouter.post('/:id?', (req, res) => {
+ordersRouter.post('/:id?', async (req, res) => {
   console.log(`POST Order`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await Orders.addOrder( { _id: req.params.id , ...req.body } )
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === CONFLICT) {
+      res.status(409).send('Item already exists');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 ordersRouter.put('/:id', (req, res) => {

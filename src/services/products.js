@@ -59,9 +59,14 @@ export default class Products {
   async addProduct(productData) {
     if (!productData) throw new Error(MISSING_DATA);
     if (productData._id === this.mockProduct._id) throw new Error(CONFLICT);
+    try {
+      await this.productSchema.validateAsync(productData);
+      console.log('Product added!');
+    } catch (err) {
+      throw new Error(err);
+    }
     // temporary mock
     return true;
-    // console.log('Product added!');
   }
 
   async updateProduct(productId, productData) {

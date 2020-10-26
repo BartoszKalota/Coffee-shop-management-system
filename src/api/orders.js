@@ -1,5 +1,7 @@
 import express from 'express';
 
+import Orders from '../services/orders.js';
+
 export const ordersRouter = express.Router();
 
 ordersRouter.get('/', (req, res) => {
@@ -8,25 +10,14 @@ ordersRouter.get('/', (req, res) => {
   });
 });
 
-ordersRouter.get('/:id', (req, res) => {
+ordersRouter.get('/:id', async (req, res) => {
   console.log(`GET Order id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    _id: '1',
-    date: new Date(),
-    location: '2',
-    paidIn: 'cash',
-    staffId: '2',
-    products: [
-      {
-        productId: '3',
-        name: 'Mocha',
-        amount: 2,
-        unitPrice: 2,
-      },
-    ],
-    total: 4
-  });
+  
+  try {
+    res.json(await Orders.getOrder(req.params.id));
+  } catch (err) {
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
 ordersRouter.post('/:id?', (req, res) => {

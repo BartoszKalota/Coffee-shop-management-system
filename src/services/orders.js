@@ -66,9 +66,14 @@ export default class Orders {
   async updateOrder(orderId, orderData) {
     if (!orderId || !orderData) throw new Error(MISSING_DATA);
     if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
+    try {
+      await this.orderUpdateSchema.validateAsync(orderData);
+      console.log('Order updated!');
+    } catch (err) {
+      throw new Error(err);
+    }
     // temporary mock
     return true;
-    // console.log('Order updated!');
   }
 
   async deleteOrder(orderId) {

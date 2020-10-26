@@ -28,7 +28,9 @@ export default class Staff {
   async updateEmployee(employeeId, employeeData) {
     if (!employeeId || !employeeData) throw new Error(MISSING_DATA);
     if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
-
+    // temporary mock
+    return true;
+    // console.log('Order updated!');
   }
 
   async deleteEmployee(employeeId) {

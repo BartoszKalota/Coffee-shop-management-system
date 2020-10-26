@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 
 export default class Staff {
   // temporary mock
@@ -45,7 +45,9 @@ export default class Staff {
       await this.employeeSchema.validateAsync(employeeData);
       console.log('Employee added!');
     } catch (err) {
-      throw new Error(err);
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
     }
     // temporary mock
     return true;
@@ -58,7 +60,9 @@ export default class Staff {
       await this.employeeUpdateSchema.validateAsync(employeeData);
       console.log('Employee updated!');
     } catch (err) {
-      throw new Error(err);
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
     }
     // temporary mock
     return true;

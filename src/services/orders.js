@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 
 export default class Orders {
   // temporary mock
@@ -57,7 +57,9 @@ export default class Orders {
       await this.addOrderSchema.validateAsync(orderData);
       console.log('Order added!');
     } catch (err) {
-      throw new Error(err);
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
     }
     // temporary mock
     return true;
@@ -70,7 +72,9 @@ export default class Orders {
       await this.orderUpdateSchema.validateAsync(orderData);
       console.log('Order updated!');
     } catch (err) {
-      throw new Error(err);
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
     }
     // temporary mock
     return true;

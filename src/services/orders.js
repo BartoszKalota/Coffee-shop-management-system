@@ -42,6 +42,7 @@ export default class Orders {
   async deleteOrder(orderId) {
     if (!orderId) throw new Error(MISSING_DATA);
     if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
-
+    // temporary mock
+    return true;
   }
 }

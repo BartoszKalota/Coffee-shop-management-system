@@ -1,5 +1,10 @@
 import express from 'express';
 
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import Products from '../services/products.js';
+
+const products = new Products();
+
 export const productsRouter = express.Router();
 
 productsRouter.get('/', (req, res) => {
@@ -8,57 +13,79 @@ productsRouter.get('/', (req, res) => {
   });
 });
 
-productsRouter.get('/all', (req, res) => {
+productsRouter.get('/all', async (req, res) => {
   console.log('GET Products - All available products');
-  // temporary mock
-  res.json([
-    {
-      product: 1
-    },
-    {
-      product: 2
-    }
-  ]);
+  try {
+    res.json(await products.getAllProducts());
+  } catch (err) {
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-productsRouter.get('/:id', (req, res) => {
+productsRouter.get('/:id', async (req, res) => {
   console.log(`GET Product id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    _id: '123',
-    name: 'Mocha',
-    brand: 'Bialetti',
-    lastOrderDate: new Date(),
-    unitPrice: 2,
-    supplierName: 'EuroKawexpol',
-    available: 10,
-    expirationDate: new Date(),
-    categories: ['coffee']
-  });
+  try {
+    res.json(await products.getProduct(req.params.id));
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-productsRouter.post('/:id?', (req, res) => {
+productsRouter.post('/:id?', async (req, res) => {
   console.log(`POST Product`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await products.addProduct( { _id: req.params.id, ...req.body } );
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === CONFLICT) {
+      res.status(409).send('Item already exists');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-productsRouter.put('/:id', (req, res) => {
+productsRouter.put('/:id', async (req, res) => {
   console.log(`PUT Product id:${req.params.id}`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await products.updateProduct(req.params.id, req.body);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-productsRouter.delete('/:id', (req ,res) => {
+productsRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Product id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await products.deleteProduct(req.params.id);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });

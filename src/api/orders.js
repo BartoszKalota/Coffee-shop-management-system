@@ -1,5 +1,10 @@
 import express from 'express';
 
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import Orders from '../services/orders.js';
+
+const orders = new Orders();
+
 export const ordersRouter = express.Router();
 
 ordersRouter.get('/', (req, res) => {
@@ -8,49 +13,67 @@ ordersRouter.get('/', (req, res) => {
   });
 });
 
-ordersRouter.get('/:id', (req, res) => {
+ordersRouter.get('/:id', async (req, res) => {
   console.log(`GET Order id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    _id: '1',
-    date: new Date(),
-    location: '2',
-    paidIn: 'cash',
-    staffId: '2',
-    products: [
-      {
-        productId: '3',
-        name: 'Mocha',
-        amount: 2,
-        unitPrice: 2,
-      },
-    ],
-    total: 4
-  });
+  try {
+    res.json(await orders.getOrder(req.params.id));
+  } catch (err) {
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-ordersRouter.post('/:id?', (req, res) => {
+ordersRouter.post('/:id?', async (req, res) => {
   console.log(`POST Order`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await orders.addOrder( { _id: req.params.id , ...req.body } )
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === CONFLICT) {
+      res.status(409).send('Item already exists');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-ordersRouter.put('/:id', (req, res) => {
+ordersRouter.put('/:id', async (req, res) => {
   console.log(`PUT Order id:${req.params.id}`);
   console.log(req.body);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await orders.updateOrder(req.params.id, req.body);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });
 
-ordersRouter.delete('/:id', (req ,res) => {
+ordersRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Order id:${req.params.id}`);
-  // temporary mock
-  res.json({
-    ok: true
-  });
+  try {
+    await orders.deleteOrder(req.params.id);
+    res.json({
+      ok: true
+    });
+  } catch (err) {
+    if (err.message === MISSING_DATA) {
+      res.status(400).send('Missing input data');
+    }
+    if (err.message === NOT_FOUND) {
+      res.status(404).send('Item not found');
+    }
+    res.status(500).send(`Server error: ${err.message}`);
+  }
 });

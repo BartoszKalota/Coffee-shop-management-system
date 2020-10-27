@@ -2,6 +2,7 @@ import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee
 } from '../db/staff.js';
 
@@ -37,8 +38,8 @@ export default class Staff {
 
   async getEmployee(employeeId) {
     if (!employeeId) throw new Error(MISSING_DATA);
-    // temporary mock
-    return this.mockEmployee;
+    // db connection
+    return await dbGetEmployee(employeeId);
   }
 
   async addEmployee(employeeData) {

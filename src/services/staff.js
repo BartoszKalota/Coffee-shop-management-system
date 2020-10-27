@@ -3,7 +3,8 @@ import Joi from '@hapi/joi';
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 import {
   getEmployee as dbGetEmployee,
-  addEmployee as dbAddEmployee
+  addEmployee as dbAddEmployee,
+  updateEmployee as dbUpdateEmployee
 } from '../db/staff.js';
 
 export default class Staff {
@@ -57,19 +58,17 @@ export default class Staff {
     return await dbAddEmployee(employeeData);
   }
 
-  async updateEmployee(employeeId, employeeData) {
-    if (!employeeId || !employeeData) throw new Error(MISSING_DATA);
-    if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
+  async updateEmployee(employeeData) {
+    // validation
     try {
       await this.employeeUpdateSchema.validateAsync(employeeData);
-      console.log('Employee updated!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbUpdateEmployee(employeeData);
   }
 
   async deleteEmployee(employeeId) {

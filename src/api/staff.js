@@ -1,6 +1,7 @@
 import express from 'express';
 
 import Staff from '../services/staff.js';
+import { NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import errorResponse from '../utils/errorResponse.js';
 
 const staff = new Staff();
@@ -40,10 +41,15 @@ staffRouter.put('/:id', async (req, res) => {
   console.log(`PUT Staff id:${req.params.id}`);
   console.log(req.body);
   try {
-    await staff.updateEmployee(req.params.id, req.body);
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const updateResult = await staff.updateEmployee( { _id: req.params.id , ...req.body } );
+    if (updateResult) {
+      console.log('Employee updated!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

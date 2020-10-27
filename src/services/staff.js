@@ -15,7 +15,7 @@ export default class Staff {
   };
 
   employeeUpdateSchema = Joi.object().keys({
-    _id: idSchema.required(),
+    _id: Joi.string().length(24).required(),
     firstName: Joi.string(),
     lastName: Joi.string(),
     startedAt: Joi.date(),

@@ -22,14 +22,14 @@ export default class Orders {
   };
 
   orderedProductSchema = Joi.object().keys({
-    prodId = idSchema.required(),
+    prodId = Joi.string().length(24).required(),
     name: Joi.string().required(),
     amount: Joi.number().greater(0).required(),
     unitPrice: Joi.number().greater(0).required()
   });
 
   orderUpdateSchema = Joi.object().keys({
-    _id: idSchema.required(),
+    _id: Joi.string().length(24).required(),
     date: Joi.date(),
     location: Joi.string(),
     paidIn: Joi.string().valid('cash', 'card'),

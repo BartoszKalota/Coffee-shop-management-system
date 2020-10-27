@@ -26,7 +26,7 @@ export default class Products {
   };
 
   productUpdateSchema = Joi.object().keys({
-    _id: idSchema.required(),
+    _id: Joi.string().length(24).required(),
     name: Joi.string(),
     brand: Joi.string(),
     lastOrderDate: Joi.date(),

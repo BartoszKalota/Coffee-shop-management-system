@@ -22,7 +22,7 @@ export default class Orders {
   };
 
   orderedProductSchema = Joi.object().keys({
-    prodId = Joi.string().length(24).required(),
+    // prodId = Joi.string().length(24).required(),
     name: Joi.string().required(),
     amount: Joi.number().greater(0).required(),
     unitPrice: Joi.number().greater(0).required()

@@ -7,13 +7,13 @@ import { APP_PORT } from './config/app.js';
 import { mainRouter as apiRouter } from './api';
 import { connectToDb } from './db';
 
-const app = express();
-
 (async () => {
+  const app = express();
+
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(cors());
-  app.use(morgan('default'));
+  app.use(morgan('combined'));
 
   await connectToDb();
 

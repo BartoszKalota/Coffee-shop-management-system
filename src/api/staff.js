@@ -1,7 +1,7 @@
 import express from 'express';
 
 import Staff from '../services/staff.js';
-import { NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import errorResponse from '../utils/errorResponse.js';
 
 const staff = new Staff();
@@ -17,7 +17,11 @@ staffRouter.get('/', (req, res) => {
 staffRouter.get('/:id', async (req, res) => {
   console.log(`GET Staff id:${req.params.id}`);
   try {
-    res.json(await staff.getEmployee(req.params.id));
+    const foundItem = await staff.getEmployee(req.params.id);
+    if (foundItem) {
+      res.json(foundItem);
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -27,11 +31,15 @@ staffRouter.post('/:id?', async (req, res) => {
   console.log(`POST Staff`);
   console.log(req.body);
   try {
-    await staff.addEmployee( { _id: req.params.id , ...req.body } );
-    console.log('Employee added!');
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const addResult = await staff.addEmployee( { _id: req.params.id , ...req.body } );
+    if (addResult) {
+      console.log('Employee added!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(CONFLICT);
   } catch (err) {
     errorResponse(err, res);
   }

@@ -9,7 +9,8 @@ export const getEmployee = async (employeeId) => {
 };
 
 export const addEmployee = async (employeeData) => {
-  return await getCollection().insertOne(employeeData);
+  const result = await getCollection().insertOne(employeeData);
+  return result.insertedId;
 };
 
 export const updateEmployee = async (employeeData) => {

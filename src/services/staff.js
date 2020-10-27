@@ -37,18 +37,19 @@ export default class Staff {
 
   employeeSchema = this.employeeUpdateSchema.options({ presence: 'required' });
 
+  addEmployeeSchema = this.employeeSchema.keys({
+    _id: Joi.any().strip().optional()
+  });
+
   async getEmployee(employeeId) {
-    if (!employeeId) throw new Error(MISSING_DATA);
     // db connection
     return await dbGetEmployee(employeeId);
   }
 
   async addEmployee(employeeData) {
-    if (!employeeData) throw new Error(MISSING_DATA);
-    if (employeeData._id === this.mockEmployee._id) throw new Error(CONFLICT);
     // validation
     try {
-      await this.employeeSchema.validateAsync(employeeData);
+      await this.addEmployeeSchema.validateAsync(employeeData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;

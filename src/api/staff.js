@@ -26,7 +26,8 @@ staffRouter.post('/:id?', async (req, res) => {
   console.log(`POST Staff`);
   console.log(req.body);
   try {
-    await staff.addEmployee( { _id: req.params.id , ...req.body } )
+    await staff.addEmployee( { _id: req.params.id , ...req.body } );
+    console.log('Employee added!');
     res.json({
       ok: true
     });

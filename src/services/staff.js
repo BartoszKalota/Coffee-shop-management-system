@@ -1,6 +1,9 @@
 import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import {
+  addEmployee as dbAddEmployee
+} from '../db/staff.js';
 
 export default class Staff {
   // temporary mock
@@ -41,16 +44,16 @@ export default class Staff {
   async addEmployee(employeeData) {
     if (!employeeData) throw new Error(MISSING_DATA);
     if (employeeData._id === this.mockEmployee._id) throw new Error(CONFLICT);
+    // validation
     try {
       await this.employeeSchema.validateAsync(employeeData);
-      console.log('Employee added!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbAddEmployee(employeeData);
   }
 
   async updateEmployee(employeeId, employeeData) {

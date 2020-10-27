@@ -1,4 +1,6 @@
-import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
+import Joi from '@hapi/joi';
+
+import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 
 export default class Orders {
   // temporary mock
@@ -19,6 +21,29 @@ export default class Orders {
     total: 4
   };
 
+  orderedProductSchema = Joi.object().keys({
+    prodId = Joi.string().length(24).required(),
+    name: Joi.string().required(),
+    amount: Joi.number().greater(0).required(),
+    unitPrice: Joi.number().greater(0).required()
+  });
+
+  orderUpdateSchema = Joi.object().keys({
+    _id: Joi.string().length(24).required(),
+    date: Joi.date(),
+    location: Joi.string(),
+    paidIn: Joi.string().valid('cash', 'card'),
+    staffId: Joi.string().length(24),
+    products: Joi.array().items(this.orderedProductSchema),
+    total: Joi.number().greater(0)
+  });
+
+  orderSchema = this.orderUpdateSchema.options({ presence: 'required' });
+
+  addOrderSchema = this.orderSchema.keys({
+    _id: Joi.any().strip().optional()
+  });
+
   async getOrder(orderId) {
     if (!orderId) throw new Error(MISSING_DATA);
     // temporary mock
@@ -28,17 +53,31 @@ export default class Orders {
   async addOrder(orderData) {
     if (!orderData) throw new Error(MISSING_DATA);
     if (orderData._id === this.mockOrder._id) throw new Error(CONFLICT);
+    try {
+      await this.addOrderSchema.validateAsync(orderData);
+      console.log('Order added!');
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
     // temporary mock
     return true;
-    // console.log('Order added!');
   }
 
   async updateOrder(orderId, orderData) {
     if (!orderId || !orderData) throw new Error(MISSING_DATA);
     if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
+    try {
+      await this.orderUpdateSchema.validateAsync(orderData);
+      console.log('Order updated!');
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
     // temporary mock
     return true;
-    // console.log('Order updated!');
   }
 
   async deleteOrder(orderId) {

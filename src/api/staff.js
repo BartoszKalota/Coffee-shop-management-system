@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import Staff from '../services/staff.js';
+import errorResponse from '../utils/errorResponse.js';
 
 const staff = new Staff();
 
@@ -18,7 +18,7 @@ staffRouter.get('/:id', async (req, res) => {
   try {
     res.json(await staff.getEmployee(req.params.id));
   } catch (err) {
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -31,13 +31,7 @@ staffRouter.post('/:id?', async (req, res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === CONFLICT) {
-      res.status(409).send('Item already exists');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -50,13 +44,7 @@ staffRouter.put('/:id', async (req, res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === NOT_FOUND) {
-      res.status(404).send('Item not found');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -68,12 +56,6 @@ staffRouter.delete('/:id', async (req ,res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === NOT_FOUND) {
-      res.status(404).send('Item not found');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });

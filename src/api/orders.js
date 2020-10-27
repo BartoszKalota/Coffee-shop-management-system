@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import Orders from '../services/orders.js';
+import errorResponse from '../utils/errorResponse.js';
 
 const orders = new Orders();
 
@@ -18,7 +18,7 @@ ordersRouter.get('/:id', async (req, res) => {
   try {
     res.json(await orders.getOrder(req.params.id));
   } catch (err) {
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -31,13 +31,7 @@ ordersRouter.post('/:id?', async (req, res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === CONFLICT) {
-      res.status(409).send('Item already exists');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -50,13 +44,7 @@ ordersRouter.put('/:id', async (req, res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === NOT_FOUND) {
-      res.status(404).send('Item not found');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });
 
@@ -68,12 +56,6 @@ ordersRouter.delete('/:id', async (req ,res) => {
       ok: true
     });
   } catch (err) {
-    if (err.message === MISSING_DATA) {
-      res.status(400).send('Missing input data');
-    }
-    if (err.message === NOT_FOUND) {
-      res.status(404).send('Item not found');
-    }
-    res.status(500).send(`Server error: ${err.message}`);
+    errorResponse(err, res);
   }
 });

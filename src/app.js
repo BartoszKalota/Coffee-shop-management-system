@@ -5,14 +5,19 @@ import morgan from 'morgan';
 
 import { APP_PORT } from './config/app.js';
 import { mainRouter as apiRouter } from './api';
+import { connectToDb } from './db';
 
 const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(morgan('default'));
+(async () => {
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(cors());
+  app.use(morgan('default'));
 
-app.use('/', apiRouter);
+  await connectToDb();
 
-app.listen(APP_PORT, () => console.log(`Server is listening on port ${APP_PORT}...`));
+  app.use('/', apiRouter);
+
+  app.listen(APP_PORT, () => console.log(`Server is listening on port ${APP_PORT}...`));
+})();

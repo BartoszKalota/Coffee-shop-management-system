@@ -1,6 +1,7 @@
 import express from 'express';
 
 import Products from '../services/products.js';
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import errorResponse from '../utils/errorResponse.js';
 
 const products = new Products();
@@ -25,7 +26,11 @@ productsRouter.get('/all', async (req, res) => {
 productsRouter.get('/:id', async (req, res) => {
   console.log(`GET Product id:${req.params.id}`);
   try {
-    res.json(await products.getProduct(req.params.id));
+    const foundItem = await products.getProduct(req.params.id);
+    if (foundItem) {
+      res.json(foundItem);
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -35,10 +40,15 @@ productsRouter.post('/:id?', async (req, res) => {
   console.log(`POST Product`);
   console.log(req.body);
   try {
-    await products.addProduct( { _id: req.params.id, ...req.body } );
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const addResult = await products.addProduct( { _id: req.params.id, ...req.body } );
+    if (addResult) {
+      console.log('Product added!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(CONFLICT);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -48,10 +58,15 @@ productsRouter.put('/:id', async (req, res) => {
   console.log(`PUT Product id:${req.params.id}`);
   console.log(req.body);
   try {
-    await products.updateProduct(req.params.id, req.body);
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const updateResult = await products.updateProduct( { _id: req.params.id, ...req.body } );
+    if (updateResult) {
+      console.log('Product updated!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -60,10 +75,14 @@ productsRouter.put('/:id', async (req, res) => {
 productsRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Product id:${req.params.id}`);
   try {
-    await products.deleteProduct(req.params.id);
-    res.json({
-      ok: true
-    });
+    const deleteResult = await products.deleteProduct(req.params.id);
+    if (deleteResult) {
+      console.log('Product deleted!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

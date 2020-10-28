@@ -1,19 +1,14 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import { VALIDATION_ERROR } from '../constants/error.js';
+import {
+  getEmployee as dbGetEmployee,
+  addEmployee as dbAddEmployee,
+  updateEmployee as dbUpdateEmployee,
+  deleteEmployee as dbDeleteEmployee
+} from '../db/staff.js';
 
 export default class Staff {
-  // temporary mock
-  mockEmployee = {
-    _id: '1',
-    firstName: 'Jan',
-    lastName: 'Kowalski',
-    startedAt: new Date(),
-    rating: 4.5,
-    position: ['waiter'],
-    monthlySalary: 4000
-  };
-
   employeeUpdateSchema = Joi.object().keys({
     _id: Joi.string().length(24).required(),
     firstName: Joi.string(),
@@ -32,47 +27,51 @@ export default class Staff {
 
   employeeSchema = this.employeeUpdateSchema.options({ presence: 'required' });
 
+  addEmployeeSchema = this.employeeSchema.keys({
+    _id: Joi.any().strip().optional()
+  });
+
   async getEmployee(employeeId) {
-    if (!employeeId) throw new Error(MISSING_DATA);
-    // temporary mock
-    return this.mockEmployee;
+    // db connection
+    return await dbGetEmployee(employeeId);
   }
 
   async addEmployee(employeeData) {
-    if (!employeeData) throw new Error(MISSING_DATA);
-    if (employeeData._id === this.mockEmployee._id) throw new Error(CONFLICT);
+    // validation
     try {
-      await this.employeeSchema.validateAsync(employeeData);
-      console.log('Employee added!');
+      await this.addEmployeeSchema.validateAsync(employeeData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbAddEmployee(employeeData);
   }
 
-  async updateEmployee(employeeId, employeeData) {
-    if (!employeeId || !employeeData) throw new Error(MISSING_DATA);
-    if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
+  async updateEmployee(employeeData) {
+    // validation
     try {
       await this.employeeUpdateSchema.validateAsync(employeeData);
-      console.log('Employee updated!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbUpdateEmployee(employeeData);
   }
 
   async deleteEmployee(employeeId) {
-    if (!employeeId) throw new Error(MISSING_DATA);
-    if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
-    // temporary mock
-    return true;
-    // console.log('Employee deleted!');
+    // validation
+    try {
+      await Joi.string().length(24).validateAsync(employeeId);
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
+    // db connection
+    return await dbDeleteEmployee(employeeId);
   }
 }

@@ -1,28 +1,18 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
+import {
+  getOrder as dbGetOrder,
+  addOrder as dbAddOrder,
+  updateOrder as dbUpdateOrder,
+  deleteOrder as dbDeleteOrder
+} from '../db/orders.js';
+import { getEmployee } from '../db/staff.js';
+import { getSelectedProducts } from '../db/products.js';
 
 export default class Orders {
-  // temporary mock
-  mockOrder = {
-    _id: '1',
-    date: new Date(),
-    location: '2',
-    paidIn: 'cash',
-    staffId: '2',
-    products: [
-      {
-        productId: '3',
-        name: 'Mocha',
-        amount: 2,
-        unitPrice: 2,
-      },
-    ],
-    total: 4
-  };
-
   orderedProductSchema = Joi.object().keys({
-    prodId = Joi.string().length(24).required(),
+    _id = Joi.string().length(24).required(),
     name: Joi.string().required(),
     amount: Joi.number().greater(0).required(),
     unitPrice: Joi.number().greater(0).required()
@@ -44,47 +34,74 @@ export default class Orders {
     _id: Joi.any().strip().optional()
   });
 
+  static async _checkIfEmployeeExists(employeeId) {
+    const existingEmployee = await getEmployee(employeeId);
+    if (!existingEmployee) throw new Error(PEER_ERROR);
+  }
+
+  static async _checkIfProductsExist(products) {
+    const productIds = products.map(product => product._id);
+    const dbProducts = await getSelectedProducts(productIds);
+    if (dbProducts.length !== productIds.length) {
+      const missingIds = productIds.filter(
+        productId => dbProducts.findIndex(product => product._id === productId) === -1
+      );
+      console.log(`Missing products: ${missingIds.join(', ')}`);
+      throw new Error(PEER_ERROR);
+    }
+  }
+
   async getOrder(orderId) {
-    if (!orderId) throw new Error(MISSING_DATA);
-    // temporary mock
-    return this.mockOrder;
+    // db connection
+    return await dbGetOrder(orderId);
   }
 
   async addOrder(orderData) {
-    if (!orderData) throw new Error(MISSING_DATA);
-    if (orderData._id === this.mockOrder._id) throw new Error(CONFLICT);
+    // validation
     try {
       await this.addOrderSchema.validateAsync(orderData);
-      console.log('Order added!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // check peer resources
+    await Orders._checkIfEmployeeExists(orderData.staffId);
+    await Orders._checkIfProductsExist(orderData.products);
+    // db connection
+    return await dbAddOrder(orderData);
   }
 
-  async updateOrder(orderId, orderData) {
-    if (!orderId || !orderData) throw new Error(MISSING_DATA);
-    if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
+  async updateOrder(orderData) {
+    // validation
     try {
       await this.orderUpdateSchema.validateAsync(orderData);
-      console.log('Order updated!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // check peer resources
+    if (orderData.staffId) {
+      await Orders._checkIfEmployeeExists(orderData.staffId);
+    }
+    if (orderData.products) {
+      await Orders._checkIfProductsExist(orderData.products);
+    }
+    // db connection
+    return await dbUpdateOrder(orderData);
   }
 
   async deleteOrder(orderId) {
-    if (!orderId) throw new Error(MISSING_DATA);
-    if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
-    // temporary mock
-    return true;
-    // console.log('Order deleted!');
+    // validation
+    try {
+      await Joi.string().length(24).validateAsync(orderId);
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
+    // db connection
+    return await dbDeleteOrder(orderId);
   }
 }

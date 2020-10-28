@@ -1,6 +1,9 @@
 import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import {
+  addProduct as dbAddProduct
+} from '../db/products.js';
 
 export default class Products {
   // temporary mock
@@ -45,6 +48,10 @@ export default class Products {
 
   productSchema = this.productUpdateSchema.options({ presence: 'required' });
 
+  addProductSchema = this.productSchema.keys({
+    _id: Joi.any().strip().optional()
+  });
+
   async getAllProducts() {
     // temporary mock
     return this.mockAllProducts;
@@ -57,18 +64,16 @@ export default class Products {
   }
 
   async addProduct(productData) {
-    if (!productData) throw new Error(MISSING_DATA);
-    if (productData._id === this.mockProduct._id) throw new Error(CONFLICT);
+    // validation
     try {
-      await this.productSchema.validateAsync(productData);
-      console.log('Product added!');
+      await this.addProductSchema.validateAsync(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbAddProduct(productData);
   }
 
   async updateProduct(productId, productData) {

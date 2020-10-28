@@ -1,6 +1,7 @@
 import express from 'express';
 
 import Products from '../services/products.js';
+import { CONFLICT, NOT_FOUND, MISSING_DATA } from '../constants/error.js';
 import errorResponse from '../utils/errorResponse.js';
 
 const products = new Products();
@@ -35,10 +36,15 @@ productsRouter.post('/:id?', async (req, res) => {
   console.log(`POST Product`);
   console.log(req.body);
   try {
-    await products.addProduct( { _id: req.params.id, ...req.body } );
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const addResult = await products.addProduct( { _id: req.params.id, ...req.body } );
+    if (addResult) {
+      console.log('Product added!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(CONFLICT);
   } catch (err) {
     errorResponse(err, res);
   }

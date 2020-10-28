@@ -32,3 +32,10 @@ export const updateOrder = async (orderData) => {
   );
   return result.modifiedCount;
 };
+
+export const deleteOrder = async (orderId) => {
+  const result = await getCollection().deleteOne({
+    _id: new ObjectId(orderId)
+  });
+  return result.deletedCount;
+};

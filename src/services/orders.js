@@ -4,7 +4,8 @@ import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constant
 import {
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
-  updateOrder as dbUpdateOrder
+  updateOrder as dbUpdateOrder,
+  deleteOrder as dbDeleteOrder
 } from '../db/orders.js';
 
 export default class Orders {
@@ -81,10 +82,15 @@ export default class Orders {
   }
 
   async deleteOrder(orderId) {
-    if (!orderId) throw new Error(MISSING_DATA);
-    if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
-    // temporary mock
-    return true;
-    // console.log('Order deleted!');
+    // validation
+    try {
+      await Joi.string().length(24).validateAsync(orderId);
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
+    // db connection
+    return await dbDeleteOrder(orderId);
   }
 }

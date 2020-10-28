@@ -50,7 +50,7 @@ staffRouter.put('/:id', async (req, res) => {
   console.log(req.body);
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
-    const updateResult = await staff.updateEmployee( { _id: req.params.id , ...req.body } );
+    const updateResult = await staff.updateEmployee( { _id: req.params.id, ...req.body } );
     if (updateResult) {
       console.log('Employee updated!');
       res.json({

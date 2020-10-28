@@ -4,7 +4,8 @@ import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constant
 import {
   getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
-  addProduct as dbAddProduct
+  addProduct as dbAddProduct,
+  updateProduct as dbUpdateProduct
 } from '../db/products.js';
 
 export default class Products {
@@ -77,19 +78,17 @@ export default class Products {
     return await dbAddProduct(productData);
   }
 
-  async updateProduct(productId, productData) {
-    if (!productId || !productData) throw new Error(MISSING_DATA);
-    if (productId !== this.mockProduct._id) throw new Error(NOT_FOUND);
+  async updateProduct(productData) {
+    // validation
     try {
       await this.productUpdateSchema.validateAsync(productData);
-      console.log('Product updated!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbUpdateProduct(productData);
   }
 
   async deleteProduct(productId) {

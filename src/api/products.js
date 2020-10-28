@@ -58,10 +58,15 @@ productsRouter.put('/:id', async (req, res) => {
   console.log(`PUT Product id:${req.params.id}`);
   console.log(req.body);
   try {
-    await products.updateProduct(req.params.id, req.body);
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const updateResult = await products.updateProduct( { _id: req.params.id, ...req.body } );
+    if (updateResult) {
+      console.log('Product updated!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

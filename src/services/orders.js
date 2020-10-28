@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
@@ -9,24 +9,6 @@ import {
 } from '../db/orders.js';
 
 export default class Orders {
-  // temporary mock
-  mockOrder = {
-    _id: '1',
-    date: new Date(),
-    location: '2',
-    paidIn: 'cash',
-    staffId: '2',
-    products: [
-      {
-        productId: '3',
-        name: 'Mocha',
-        amount: 2,
-        unitPrice: 2,
-      },
-    ],
-    total: 4
-  };
-
   orderedProductSchema = Joi.object().keys({
     // prodId = Joi.string().length(24).required(),
     name: Joi.string().required(),

@@ -32,7 +32,7 @@ staffRouter.post('/:id?', async (req, res) => {
   console.log(req.body);
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
-    const addResult = await staff.addEmployee( { _id: req.params.id , ...req.body } );
+    const addResult = await staff.addEmployee( { _id: req.params.id, ...req.body } );
     if (addResult) {
       console.log('Employee added!');
       res.json({

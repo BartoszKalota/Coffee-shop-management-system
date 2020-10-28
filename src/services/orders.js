@@ -1,6 +1,9 @@
 import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import {
+  addOrder as dbAddOrder
+} from '../db/orders.js';
 
 export default class Orders {
   // temporary mock
@@ -51,18 +54,16 @@ export default class Orders {
   }
 
   async addOrder(orderData) {
-    if (!orderData) throw new Error(MISSING_DATA);
-    if (orderData._id === this.mockOrder._id) throw new Error(CONFLICT);
+    // validation
     try {
       await this.addOrderSchema.validateAsync(orderData);
-      console.log('Order added!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbAddOrder(orderData);
   }
 
   async updateOrder(orderId, orderData) {

@@ -49,10 +49,15 @@ ordersRouter.put('/:id', async (req, res) => {
   console.log(`PUT Order id:${req.params.id}`);
   console.log(req.body);
   try {
-    await orders.updateOrder(req.params.id, req.body);
-    res.json({
-      ok: true
-    });
+    if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
+    const updateResult = await orders.updateOrder( { _id: req.params.id, ...req.body } );
+    if (updateResult) {
+      console.log('Order updated!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

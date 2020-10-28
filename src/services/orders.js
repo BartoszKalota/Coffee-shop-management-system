@@ -3,7 +3,8 @@ import Joi from '@hapi/joi';
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 import {
   getOrder as dbGetOrder,
-  addOrder as dbAddOrder
+  addOrder as dbAddOrder,
+  updateOrder as dbUpdateOrder
 } from '../db/orders.js';
 
 export default class Orders {
@@ -66,19 +67,17 @@ export default class Orders {
     return await dbAddOrder(orderData);
   }
 
-  async updateOrder(orderId, orderData) {
-    if (!orderId || !orderData) throw new Error(MISSING_DATA);
-    if (orderId !== this.mockOrder._id) throw new Error(NOT_FOUND);
+  async updateOrder(orderData) {
+    // validation
     try {
       await this.orderUpdateSchema.validateAsync(orderData);
-      console.log('Order updated!');
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // temporary mock
-    return true;
+    // db connection
+    return await dbUpdateOrder(orderData);
   }
 
   async deleteOrder(orderId) {

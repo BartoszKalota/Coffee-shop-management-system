@@ -4,7 +4,8 @@ import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constant
 import {
   getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee,
-  updateEmployee as dbUpdateEmployee
+  updateEmployee as dbUpdateEmployee,
+  deleteEmployee as dbDeleteEmployee
 } from '../db/staff.js';
 
 export default class Staff {
@@ -73,10 +74,15 @@ export default class Staff {
   }
 
   async deleteEmployee(employeeId) {
-    if (!employeeId) throw new Error(MISSING_DATA);
-    if (employeeId !== this.mockEmployee._id) throw new Error(NOT_FOUND);
-    // temporary mock
-    return true;
-    // console.log('Employee deleted!');
+    // validation
+    try {
+      await Joi.string().length(24).validateAsync(employeeId);
+    } catch (err) {
+      const error = new Error(VALIDATION_ERROR);
+      error.reason = err.message;
+      throw error;
+    }
+    // db connection
+    return await dbDeleteEmployee(employeeId);
   }
 }

@@ -66,10 +66,14 @@ staffRouter.put('/:id', async (req, res) => {
 staffRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Staff id:${req.params.id}`);
   try {
-    await staff.deleteEmployee(req.params.id);
-    res.json({
-      ok: true
-    });
+    const deleteResult = await staff.deleteEmployee(req.params.id);
+    if (deleteResult) {
+      console.log('Employee deleted!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

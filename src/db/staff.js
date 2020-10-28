@@ -32,3 +32,10 @@ export const updateEmployee = async (employeeData) => {
   );
   return result.modifiedCount;
 };
+
+export const deleteEmployee = async (employeeId) => {
+  const result = await getCollection().deleteOne({
+    _id: new ObjectId(employeeId)
+  });
+  return result.deletedCount;
+};

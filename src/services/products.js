@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
@@ -10,28 +10,6 @@ import {
 } from '../db/products.js';
 
 export default class Products {
-  // temporary mock
-  mockAllProducts = [
-    {
-      product: 1
-    },
-    {
-      product: 2
-    }
-  ];
-  // temporary mock
-  mockProduct = {
-    _id: '123',
-    name: 'Mocha',
-    brand: 'Bialetti',
-    lastOrderDate: new Date(),
-    unitPrice: 2,
-    supplierName: 'EuroKawexpol',
-    available: 10,
-    expirationDate: new Date(),
-    categories: ['coffee']
-  };
-
   productUpdateSchema = Joi.object().keys({
     _id: Joi.string().length(24).required(),
     name: Joi.string(),

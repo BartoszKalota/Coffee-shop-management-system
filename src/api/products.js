@@ -26,7 +26,11 @@ productsRouter.get('/all', async (req, res) => {
 productsRouter.get('/:id', async (req, res) => {
   console.log(`GET Product id:${req.params.id}`);
   try {
-    res.json(await products.getProduct(req.params.id));
+    const foundItem = await products.getProduct(req.params.id);
+    if (foundItem) {
+      res.json(foundItem);
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

@@ -2,6 +2,7 @@ import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getOrder as dbGetOrder,
   addOrder as dbAddOrder
 } from '../db/orders.js';
 
@@ -48,9 +49,8 @@ export default class Orders {
   });
 
   async getOrder(orderId) {
-    if (!orderId) throw new Error(MISSING_DATA);
-    // temporary mock
-    return this.mockOrder;
+    // db connection
+    return await dbGetOrder(orderId);
   }
 
   async addOrder(orderData) {

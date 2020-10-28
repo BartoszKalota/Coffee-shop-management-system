@@ -17,7 +17,11 @@ ordersRouter.get('/', (req, res) => {
 ordersRouter.get('/:id', async (req, res) => {
   console.log(`GET Order id:${req.params.id}`);
   try {
-    res.json(await orders.getOrder(req.params.id));
+    const foundItem = await orders.getOrder(req.params.id);
+    if (foundItem) {
+      res.json(foundItem);
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

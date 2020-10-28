@@ -1,16 +1,18 @@
 import Joi from '@hapi/joi';
 
-import { VALIDATION_ERROR } from '../constants/error.js';
+import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
   updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../db/orders.js';
+import { getEmployee } from '../db/staff.js';
+import { getSelectedProducts } from '../db/products.js';
 
 export default class Orders {
   orderedProductSchema = Joi.object().keys({
-    // prodId = Joi.string().length(24).required(),
+    _id = Joi.string().length(24).required(),
     name: Joi.string().required(),
     amount: Joi.number().greater(0).required(),
     unitPrice: Joi.number().greater(0).required()
@@ -32,6 +34,23 @@ export default class Orders {
     _id: Joi.any().strip().optional()
   });
 
+  static async _checkIfEmployeeExists(employeeId) {
+    const existingEmployee = await getEmployee(employeeId);
+    if (!existingEmployee) throw new Error(PEER_ERROR);
+  }
+
+  static async _checkIfProductsExist(products) {
+    const productIds = products.map(product => product._id);
+    const dbProducts = await getSelectedProducts(productIds);
+    if (dbProducts.length !== productIds.length) {
+      const missingIds = productIds.filter(
+        productId => dbProducts.findIndex(product => product._id === productId) === -1
+      );
+      console.log(`Missing products: ${missingIds.join(', ')}`);
+      throw new Error(PEER_ERROR);
+    }
+  }
+
   async getOrder(orderId) {
     // db connection
     return await dbGetOrder(orderId);
@@ -46,6 +65,9 @@ export default class Orders {
       error.reason = err.message;
       throw error;
     }
+    // check peer resources
+    await Orders._checkIfEmployeeExists(orderData.staffId);
+    await Orders._checkIfProductsExist(orderData.products);
     // db connection
     return await dbAddOrder(orderData);
   }
@@ -58,6 +80,13 @@ export default class Orders {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
+    }
+    // check peer resources
+    if (orderData.staffId) {
+      await Orders._checkIfEmployeeExists(orderData.staffId);
+    }
+    if (orderData.products) {
+      await Orders._checkIfProductsExist(orderData.products);
     }
     // db connection
     return await dbUpdateOrder(orderData);

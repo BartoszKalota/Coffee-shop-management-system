@@ -10,6 +10,14 @@ export const getAllProducts = async () => {
   return await getCollection().find({}).toArray();
 };
 
+export const getSelectedProducts = async (productIds) => {
+  return await getCollection().find({
+    _id: {
+      '$in': productIds.map(productId => new ObjectId(productId))
+    }
+  }).toArray();
+};
+
 export const getProduct = async (productId) => {
   return await getCollection().findOne({
     _id: new ObjectId(productId)

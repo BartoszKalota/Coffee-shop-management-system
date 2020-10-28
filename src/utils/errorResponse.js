@@ -14,7 +14,7 @@ export default (err, res) => {
     case MISSING_DATA:
       return res.status(400).send('Missing input data');
     case PEER_ERROR:
-      return res.status(409).send('Peer resource does not exist');
+      return res.status(409).send('Missing related peer resource (product or staff)');
     default:
       return res.status(500).send(`Server error: ${err.message}`);
   }

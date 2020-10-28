@@ -6,6 +6,10 @@ const { ObjectId } = Mongo;
 
 const getCollection = () => db.collection('products');
 
+export const getAllProducts = async () => {
+  return await getCollection().find({}).toArray();
+};
+
 export const getProduct = async (productId) => {
   return await getCollection().findOne({
     _id: new ObjectId(productId)

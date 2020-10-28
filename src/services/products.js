@@ -2,6 +2,7 @@ import Joi from '@hapi/joi';
 
 import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
   addProduct as dbAddProduct
 } from '../db/products.js';
@@ -54,8 +55,8 @@ export default class Products {
   });
 
   async getAllProducts() {
-    // temporary mock
-    return this.mockAllProducts;
+    // db connection
+    return await dbGetAllProducts();
   }
   
   async getProduct(productId) {

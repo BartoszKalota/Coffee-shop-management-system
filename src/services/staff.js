@@ -1,6 +1,6 @@
 import Joi from '@hapi/joi';
 
-import { CONFLICT, NOT_FOUND, MISSING_DATA, VALIDATION_ERROR } from '../constants/error.js';
+import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee,
@@ -9,17 +9,6 @@ import {
 } from '../db/staff.js';
 
 export default class Staff {
-  // temporary mock
-  mockEmployee = {
-    _id: '1',
-    firstName: 'Jan',
-    lastName: 'Kowalski',
-    startedAt: new Date(),
-    rating: 4.5,
-    position: ['waiter'],
-    monthlySalary: 4000
-  };
-
   employeeUpdateSchema = Joi.object().keys({
     _id: Joi.string().length(24).required(),
     firstName: Joi.string(),

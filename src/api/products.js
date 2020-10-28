@@ -75,10 +75,14 @@ productsRouter.put('/:id', async (req, res) => {
 productsRouter.delete('/:id', async (req ,res) => {
   console.log(`DELETE Product id:${req.params.id}`);
   try {
-    await products.deleteProduct(req.params.id);
-    res.json({
-      ok: true
-    });
+    const deleteResult = await products.deleteProduct(req.params.id);
+    if (deleteResult) {
+      console.log('Product deleted!');
+      res.json({
+        ok: true
+      });
+    }
+    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

@@ -36,3 +36,10 @@ export const updateProduct = async (productData) => {
   );
   return result.modifiedCount;
 };
+
+export const deleteProduct = async (productId) => {
+  const result = await getCollection().deleteOne({
+    _id: new ObjectId(productId)
+  });
+  return result.deletedCount;
+};

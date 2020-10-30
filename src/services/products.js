@@ -1,4 +1,4 @@
-import Joi from '@hapi/joi';
+import mongoose from 'mongoose';
 
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
@@ -8,6 +8,44 @@ import {
   updateProduct as dbUpdateProduct,
   deleteProduct as dbDeleteProduct
 } from '../db/products.js';
+
+const mProductSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  brand: {
+    type: String,
+    required: true
+  },
+  lastOrderDate: {
+    type: Date,
+    required: true
+  },
+  unitPrice: {
+    type: Number,
+    required: true
+  },
+  supplierName: {
+    type: String,
+    required: true
+  },
+  available: {
+    type: Number,
+    required: true
+  },
+  expirationDate: {
+    type: Date,
+    required: true
+  },
+  categories: {
+    type: [String],
+    required: true,
+    enum: ['coffee', 'food', 'accessories', 'equipment', 'premium']
+  }
+});
+
+const Product = mongoose.model('Product', mProductSchema, 'products');
 
 export default class Products {
   productUpdateSchema = Joi.object().keys({

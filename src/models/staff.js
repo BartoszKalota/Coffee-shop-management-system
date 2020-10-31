@@ -62,3 +62,12 @@ export const updateEmployee = async (employeeData) => {
     .exec();
   return result.nModified;
 };
+
+export const deleteEmployee = async (employeeId) => {
+  const result = await Employee
+    .deleteOne({
+      _id: employeeId
+    })
+    .exec();
+  return result.deletedCount;
+};

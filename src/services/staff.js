@@ -4,11 +4,9 @@ import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee,
-  updateEmployee as dbUpdateEmployee
-} from '../models/staff.js';
-import {
+  updateEmployee as dbUpdateEmployee,
   deleteEmployee as dbDeleteEmployee
-} from '../db/staff.js';
+} from '../models/staff.js';
 
 export default class Staff {
   // employeeUpdateSchema = Joi.object().keys({
@@ -61,15 +59,13 @@ export default class Staff {
   }
 
   async deleteEmployee(employeeId) {
-    // validation
+    // validation & db connection
     try {
-      await Joi.string().length(24).validateAsync(employeeId);
+      return await dbDeleteEmployee(employeeId);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbDeleteEmployee(employeeId);
   }
 }

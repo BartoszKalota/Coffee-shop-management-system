@@ -5,7 +5,7 @@ import morgan from 'morgan';
 
 import { APP_PORT } from './config/app.js';
 import { mainRouter as apiRouter } from './api';
-import { connectToDb } from './db';
+import { connectToMongoose } from './models';
 
 (async () => {
   const app = express();
@@ -15,7 +15,7 @@ import { connectToDb } from './db';
   app.use(cors());
   app.use(morgan('combined'));
 
-  await connectToDb();
+  await connectToMongoose();
 
   app.use('/', apiRouter);
 

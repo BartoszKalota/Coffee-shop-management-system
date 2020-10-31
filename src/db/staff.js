@@ -1,6 +1,6 @@
 import Mongo from 'mongodb';
 
-import { db } from './index.js';
+// import { db } from './index.js';
 
 const { ObjectId } = Mongo;
 

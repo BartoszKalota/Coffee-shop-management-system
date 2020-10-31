@@ -11,27 +11,27 @@ import {
 } from '../db/staff.js';
 
 export default class Staff {
-  employeeUpdateSchema = Joi.object().keys({
-    _id: Joi.string().length(24).required(),
-    firstName: Joi.string(),
-    lastName: Joi.string(),
-    startedAt: Joi.date(),
-    rating: Joi.number().min(0).max(10),
-    position: Joi.array().items(
-      Joi.string().valid('waiter'),
-      Joi.string().valid('waitress'),
-      Joi.string().valid('barista'),
-      Joi.string().valid('cleaning'),
-      Joi.string().valid('temp')
-    ),
-    monthlySalary: Joi.number().min(2000)
-  });
+  // employeeUpdateSchema = Joi.object().keys({
+  //   _id: Joi.string().length(24).required(),
+  //   firstName: Joi.string(),
+  //   lastName: Joi.string(),
+  //   startedAt: Joi.date(),
+  //   rating: Joi.number().min(0).max(10),
+  //   position: Joi.array().items(
+  //     Joi.string().valid('waiter'),
+  //     Joi.string().valid('waitress'),
+  //     Joi.string().valid('barista'),
+  //     Joi.string().valid('cleaning'),
+  //     Joi.string().valid('temp')
+  //   ),
+  //   monthlySalary: Joi.number().min(2000)
+  // });
 
-  employeeSchema = this.employeeUpdateSchema.options({ presence: 'required' });
+  // employeeSchema = this.employeeUpdateSchema.options({ presence: 'required' });
 
-  addEmployeeSchema = this.employeeSchema.keys({
-    _id: Joi.any().strip().optional()
-  });
+  // addEmployeeSchema = this.employeeSchema.keys({
+  //   _id: Joi.any().strip().optional()
+  // });
 
   async getEmployee(employeeId) {
     // db connection

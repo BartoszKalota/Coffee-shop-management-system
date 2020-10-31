@@ -25,11 +25,11 @@ const mOrderSchema = new mongoose.Schema({
     required: true,
     enum: ['cash', 'card']
   },
-  staffId: {
-    type: mongoose.Schema.ObjectId,
-    required: true,
-    ref: Employee
-  },
+  // staffId: {
+  //   type: mongoose.Schema.ObjectId,
+  //   required: true,
+  //   ref: Employee
+  // },
   products: [{
     _id: {
       type: mongoose.Schema.ObjectId,
@@ -58,28 +58,28 @@ const mOrderSchema = new mongoose.Schema({
 const Order = mongoose.model('Order', mOrderSchema, 'orders');
 
 export default class Orders {
-  orderedProductSchema = Joi.object().keys({
-    _id = Joi.string().length(24).required(),
-    name: Joi.string().required(),
-    amount: Joi.number().greater(0).required(),
-    unitPrice: Joi.number().greater(0).required()
-  });
+  // orderedProductSchema = Joi.object().keys({
+  //   _id = Joi.string().length(24).required(),
+  //   name: Joi.string().required(),
+  //   amount: Joi.number().greater(0).required(),
+  //   unitPrice: Joi.number().greater(0).required()
+  // });
 
-  orderUpdateSchema = Joi.object().keys({
-    _id: Joi.string().length(24).required(),
-    date: Joi.date(),
-    location: Joi.string(),
-    paidIn: Joi.string().valid('cash', 'card'),
-    staffId: Joi.string().length(24),
-    products: Joi.array().items(this.orderedProductSchema),
-    total: Joi.number().greater(0)
-  });
+  // orderUpdateSchema = Joi.object().keys({
+  //   _id: Joi.string().length(24).required(),
+  //   date: Joi.date(),
+  //   location: Joi.string(),
+  //   paidIn: Joi.string().valid('cash', 'card'),
+  //   staffId: Joi.string().length(24),
+  //   products: Joi.array().items(this.orderedProductSchema),
+  //   total: Joi.number().greater(0)
+  // });
 
-  orderSchema = this.orderUpdateSchema.options({ presence: 'required' });
+  // orderSchema = this.orderUpdateSchema.options({ presence: 'required' });
 
-  addOrderSchema = this.orderSchema.keys({
-    _id: Joi.any().strip().optional()
-  });
+  // addOrderSchema = this.orderSchema.keys({
+  //   _id: Joi.any().strip().optional()
+  // });
 
   static async _checkIfEmployeeExists(employeeId) {
     const existingEmployee = await getEmployee(employeeId);

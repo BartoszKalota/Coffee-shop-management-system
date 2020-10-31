@@ -32,3 +32,9 @@ const employeeSchema = new mongoose.Schema({
 });
 
 export const Employee = mongoose.model('Employee', employeeSchema, 'staff');
+
+export const addEmployee = async (employeeData) => {
+  const employeeInstance = new Employee(employeeData);
+  await employeeInstance.save();
+  return employeeInstance._id;
+};

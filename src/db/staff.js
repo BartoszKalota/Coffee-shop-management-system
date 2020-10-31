@@ -12,11 +12,6 @@ export const getEmployee = async (employeeId) => {
   });
 };
 
-export const addEmployee = async (employeeData) => {
-  const result = await getCollection().insertOne(employeeData);
-  return result.insertedId;
-};
-
 export const updateEmployee = async (employeeData) => {
   const dataToUpdate = { ...employeeData };
   delete dataToUpdate._id;  // need to delete _id for correct update procedure

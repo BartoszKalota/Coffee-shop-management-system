@@ -2,8 +2,10 @@ import mongoose from 'mongoose';
 
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
+  addEmployee as dbAddEmployee
+} from '../models/staff.js';
+import {
   getEmployee as dbGetEmployee,
-  addEmployee as dbAddEmployee,
   updateEmployee as dbUpdateEmployee,
   deleteEmployee as dbDeleteEmployee
 } from '../db/staff.js';
@@ -37,16 +39,14 @@ export default class Staff {
   }
 
   async addEmployee(employeeData) {
-    // validation
     try {
-      await this.addEmployeeSchema.validateAsync(employeeData);
+      // validation & db connection
+      return await dbAddEmployee(employeeData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbAddEmployee(employeeData);
   }
 
   async updateEmployee(employeeData) {

@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
   getOrder as dbGetOrder,
-  addOrder as dbAddOrder
+  addOrder as dbAddOrder,
+  updateOrder as dbUpdateOrder
 } from '../models/orders.js';
 import {
-  updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../db/orders.js';
 import { getEmployee } from '../models/staff.js';
@@ -73,23 +73,21 @@ export default class Orders {
   }
 
   async updateOrder(orderData) {
-    // validation
     try {
-      await this.orderUpdateSchema.validateAsync(orderData);
+      // check peer resources
+      if (orderData.staffId) {
+        await Orders._checkIfEmployeeExists(orderData.staffId);
+      }
+      if (orderData.products) {
+        await Orders._checkIfProductsExist(orderData.products);
+      }
+      // validation & db connection
+      return await dbUpdateOrder(orderData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // check peer resources
-    if (orderData.staffId) {
-      await Orders._checkIfEmployeeExists(orderData.staffId);
-    }
-    if (orderData.products) {
-      await Orders._checkIfProductsExist(orderData.products);
-    }
-    // db connection
-    return await dbUpdateOrder(orderData);
   }
 
   async deleteOrder(orderId) {

@@ -59,3 +59,21 @@ export const addOrder = async (orderData) => {
   const result = await orderInstance.save();
   return result._id;
 };
+
+export const updateOrder = async (orderData) => {
+  const dataToUpdate = { ...orderData };
+  delete dataToUpdate._id;  // need to delete _id for correct update procedure
+
+  const result = await Order
+    .updateOne(
+      {
+        _id: orderData._id
+      },
+      {
+        '$set': dataToUpdate
+      },
+      { upsert: false }
+    )
+    .exec();
+  return result.nModified;
+};

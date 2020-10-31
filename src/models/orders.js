@@ -48,6 +48,12 @@ const orderSchema = new mongoose.Schema({
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
 
+export const getOrder = async (orderId) => {
+  return await Order
+    .findById(orderId)
+    .exec();
+};
+
 export const addOrder = async (orderData) => {
   const orderInstance = await new Order(orderData);
   const result = await orderInstance.save();

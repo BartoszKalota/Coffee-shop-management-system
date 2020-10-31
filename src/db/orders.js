@@ -6,12 +6,6 @@ const { ObjectId } = Mongo;
 
 const getCollection = () => db.collection('orders');
 
-export const getOrder = async (orderId) => {
-  return await getCollection().findOne({
-    _id: new ObjectId(orderId)
-  });
-};
-
 export const updateOrder = async (orderData) => {
   const dataToUpdate = { ...orderData };
   delete dataToUpdate._id;  // need to delete _id for correct update procedure

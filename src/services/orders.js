@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getOrder as dbGetOrder,
   addOrder as dbAddOrder
 } from '../models/orders.js';
 import {
-  getOrder as dbGetOrder,
   updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../db/orders.js';

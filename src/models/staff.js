@@ -44,3 +44,21 @@ export const addEmployee = async (employeeData) => {
   await employeeInstance.save();
   return employeeInstance._id;
 };
+
+export const updateEmployee = async (employeeData) => {
+  const dataToUpdate = { ...employeeData };
+  delete dataToUpdate._id;  // need to delete _id for correct update procedure
+
+  const result = await Employee
+    .updateOne(
+      {
+        _id: employeeData._id
+      },
+      {
+        '$set': dataToUpdate
+      },
+      { upsert: false }
+    )
+    .exec();
+  return result.nModified;
+};

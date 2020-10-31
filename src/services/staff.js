@@ -3,10 +3,10 @@ import mongoose from 'mongoose';
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getEmployee as dbGetEmployee,
-  addEmployee as dbAddEmployee
+  addEmployee as dbAddEmployee,
+  updateEmployee as dbUpdateEmployee
 } from '../models/staff.js';
 import {
-  updateEmployee as dbUpdateEmployee,
   deleteEmployee as dbDeleteEmployee
 } from '../db/staff.js';
 
@@ -50,16 +50,14 @@ export default class Staff {
   }
 
   async updateEmployee(employeeData) {
-    // validation
+    // validation & db connection
     try {
-      await this.employeeUpdateSchema.validateAsync(employeeData);
+      return await dbUpdateEmployee(employeeData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbUpdateEmployee(employeeData);
   }
 
   async deleteEmployee(employeeId) {

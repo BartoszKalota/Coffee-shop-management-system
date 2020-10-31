@@ -41,8 +41,8 @@ export const getEmployee = async (employeeId) => {
 
 export const addEmployee = async (employeeData) => {
   const employeeInstance = new Employee(employeeData);
-  await employeeInstance.save();
-  return employeeInstance._id;
+  const result = await employeeInstance.save();
+  return result._id;
 };
 
 export const updateEmployee = async (employeeData) => {

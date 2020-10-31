@@ -14,22 +14,6 @@ export const getSelectedProducts = async (productIds) => {
   }).toArray();
 };
 
-export const updateProduct = async (productData) => {
-  const dataToUpdate = { ...productData };
-  delete dataToUpdate._id;  // need to delete _id for correct update procedure
-
-  const result = await getCollection().updateOne(
-    {
-      _id: new ObjectId(productData._id)
-    },
-    {
-      '$set': dataToUpdate
-    },
-    { upsert: false }
-  );
-  return result.modifiedCount;
-};
-
 export const deleteProduct = async (productId) => {
   const result = await getCollection().deleteOne({
     _id: new ObjectId(productId)

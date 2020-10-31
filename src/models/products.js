@@ -55,3 +55,21 @@ export const addProduct = async (productData) => {
   const result = await productInstance.save();
   return result._id;
 };
+
+export const updateProduct = async (productData) => {
+  const dataToUpdate = { ...productData };
+  delete dataToUpdate._id;  // need to delete _id for correct update procedure
+
+  const result = await Product
+    .updateOne(
+      {
+        _id: productData._id
+      },
+      {
+        '$set': dataToUpdate
+      },
+      { upsert: false }
+    )
+    .exec();
+  return result.nModified;
+};

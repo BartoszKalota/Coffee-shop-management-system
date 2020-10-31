@@ -4,10 +4,10 @@ import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
-  addProduct as dbAddProduct
+  addProduct as dbAddProduct,
+  updateProduct as dbUpdateProduct
 } from '../models/products.js';
 import {
-  updateProduct as dbUpdateProduct,
   deleteProduct as dbDeleteProduct
 } from '../db/products.js';
 
@@ -58,16 +58,14 @@ export default class Products {
   }
 
   async updateProduct(productData) {
-    // validation
+    // validation & db connection
     try {
-      await this.productUpdateSchema.validateAsync(productData);
+      return await dbUpdateProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbUpdateProduct(productData);
   }
 
   async deleteProduct(productId) {

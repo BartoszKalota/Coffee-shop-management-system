@@ -8,39 +8,6 @@ import {
   deleteEmployee as dbDeleteEmployee
 } from '../db/staff.js';
 
-const mEmployeeSchema = new mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true
-  },
-  lastName: {
-    type: String,
-    required: true
-  },
-  startedAt: {
-    type: Date,
-    required: true
-  },
-  rating: {
-    type: Number,
-    required: true,
-    min: 0,
-    max: 10
-  },
-  position: {
-    type: [String],
-    required: true,
-    enum: ['waiter', 'waitress', 'barista', 'cleaning', 'temp']
-  },
-  monthlySalary: {
-    type: Number,
-    required: true,
-    min: 2000
-  }
-});
-
-const Employee = mongoose.model('Employee', mEmployeeSchema, 'staff');
-
 export default class Staff {
   employeeUpdateSchema = Joi.object().keys({
     _id: Joi.string().length(24).required(),

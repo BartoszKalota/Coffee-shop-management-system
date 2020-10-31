@@ -13,10 +13,3 @@ export const getSelectedProducts = async (productIds) => {
     }
   }).toArray();
 };
-
-export const deleteProduct = async (productId) => {
-  const result = await getCollection().deleteOne({
-    _id: new ObjectId(productId)
-  });
-  return result.deletedCount;
-};

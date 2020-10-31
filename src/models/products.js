@@ -73,3 +73,12 @@ export const updateProduct = async (productData) => {
     .exec();
   return result.nModified;
 };
+
+export const deleteProduct = async (productId) => {
+  const result = await Product
+    .deleteOne({
+      _id: productId
+    })
+    .exec();
+  return result.deletedCount;
+};

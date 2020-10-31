@@ -18,12 +18,6 @@ export const getSelectedProducts = async (productIds) => {
   }).toArray();
 };
 
-export const getProduct = async (productId) => {
-  return await getCollection().findOne({
-    _id: new ObjectId(productId)
-  });
-};
-
 export const updateProduct = async (productData) => {
   const dataToUpdate = { ...productData };
   delete dataToUpdate._id;  // need to delete _id for correct update procedure

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-// remember to import Employee model later
 
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
@@ -10,52 +9,6 @@ import {
 } from '../db/orders.js';
 import { getEmployee } from '../models/staff.js';
 import { getSelectedProducts } from '../db/products.js';
-
-const mOrderSchema = new mongoose.Schema({
-  date: {
-    type: Date,
-    required: true
-  },
-  location: {
-    type: String,
-    required: true
-  },
-  paidIn: {
-    type: String,
-    required: true,
-    enum: ['cash', 'card']
-  },
-  // staffId: {
-  //   type: mongoose.Schema.ObjectId,
-  //   required: true,
-  //   ref: Employee
-  // },
-  products: [{
-    _id: {
-      type: mongoose.Schema.ObjectId,
-      required: true
-    },
-    name: {
-      type: String,
-      required: true,
-    },
-    amount: {
-      type: Number,
-      required: true
-    },
-    unitPrice: {
-      type: Number,
-      required: true
-    }
-  }],
-  total: {
-    type: Number,
-    required: true,
-    min: 0.01
-  }
-});
-
-const Order = mongoose.model('Order', mOrderSchema, 'orders');
 
 export default class Orders {
   // orderedProductSchema = Joi.object().keys({

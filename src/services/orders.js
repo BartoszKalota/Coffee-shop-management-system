@@ -4,11 +4,9 @@ import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
-  updateOrder as dbUpdateOrder
-} from '../models/orders.js';
-import {
+  updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
-} from '../db/orders.js';
+} from '../models/orders.js';
 import { getEmployee } from '../models/staff.js';
 import { getSelectedProducts } from '../models/products.js';
 
@@ -91,15 +89,13 @@ export default class Orders {
   }
 
   async deleteOrder(orderId) {
-    // validation
     try {
-      await Joi.string().length(24).validateAsync(orderId);
+      // validation & db connection
+      return await dbDeleteOrder(orderId);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbDeleteOrder(orderId);
   }
 }

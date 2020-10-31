@@ -77,3 +77,12 @@ export const updateOrder = async (orderData) => {
     .exec();
   return result.nModified;
 };
+
+export const deleteOrder = async (orderId) => {
+  const result = await Order
+    .deleteOne({
+      _id: orderId
+    })
+    .exec();
+  return result.deletedCount;
+};

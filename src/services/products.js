@@ -2,11 +2,11 @@ import mongoose from 'mongoose';
 
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
   addProduct as dbAddProduct
 } from '../models/products.js';
 import {
-  getAllProducts as dbGetAllProducts,
   updateProduct as dbUpdateProduct,
   deleteProduct as dbDeleteProduct
 } from '../db/products.js';

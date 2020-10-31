@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee
 } from '../models/staff.js';
 import {
-  getEmployee as dbGetEmployee,
   updateEmployee as dbUpdateEmployee,
   deleteEmployee as dbDeleteEmployee
 } from '../db/staff.js';

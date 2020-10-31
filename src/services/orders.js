@@ -8,7 +8,7 @@ import {
   updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../db/orders.js';
-import { getEmployee } from '../db/staff.js';
+import { getEmployee } from '../models/staff.js';
 import { getSelectedProducts } from '../db/products.js';
 
 const mOrderSchema = new mongoose.Schema({

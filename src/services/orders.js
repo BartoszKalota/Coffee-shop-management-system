@@ -2,13 +2,15 @@ import mongoose from 'mongoose';
 
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  addOrder as dbAddOrder
+} from '../models/orders.js';
+import {
   getOrder as dbGetOrder,
-  addOrder as dbAddOrder,
   updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../db/orders.js';
 import { getEmployee } from '../models/staff.js';
-import { getSelectedProducts } from '../db/products.js';
+import { getSelectedProducts } from '../models/products.js';
 
 export default class Orders {
   // orderedProductSchema = Joi.object().keys({
@@ -57,19 +59,17 @@ export default class Orders {
   }
 
   async addOrder(orderData) {
-    // validation
     try {
-      await this.addOrderSchema.validateAsync(orderData);
+      // check peer resources
+      await Orders._checkIfEmployeeExists(orderData.staffId);
+      await Orders._checkIfProductsExist(orderData.products);
+      // validation & db connection
+      return await dbAddOrder(orderData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // check peer resources
-    await Orders._checkIfEmployeeExists(orderData.staffId);
-    await Orders._checkIfProductsExist(orderData.products);
-    // db connection
-    return await dbAddOrder(orderData);
   }
 
   async updateOrder(orderData) {

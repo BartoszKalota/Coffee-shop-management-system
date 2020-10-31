@@ -12,11 +12,6 @@ export const getOrder = async (orderId) => {
   });
 };
 
-export const addOrder = async (orderData) => {
-  const result = await getCollection().insertOne(orderData);
-  return result.insertedId;
-};
-
 export const updateOrder = async (orderData) => {
   const dataToUpdate = { ...orderData };
   delete dataToUpdate._id;  // need to delete _id for correct update procedure

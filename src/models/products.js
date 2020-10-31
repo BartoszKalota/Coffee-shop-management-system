@@ -44,6 +44,16 @@ export const getAllProducts = async () => {
     .exec();
 };
 
+export const getSelectedProducts = async (productIds) => {
+  return await Product
+    .find({
+      _id: {
+        '$in': productIds
+      }
+    })
+    .exec();
+};
+
 export const getProduct = async (productId) => {
   return await Product
     .findById(productId)

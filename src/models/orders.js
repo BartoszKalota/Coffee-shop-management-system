@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { Employee } from '../models/staff.js';
+import { Employee } from './staff.js';
 
 const orderSchema = new mongoose.Schema({
   date: {
@@ -46,4 +46,10 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
-const Order = mongoose.model('Order', orderSchema, 'orders');
+export const Order = mongoose.model('Order', orderSchema, 'orders');
+
+export const addOrder = async (orderData) => {
+  const orderInstance = await new Order(orderData);
+  const result = await orderInstance.save();
+  return result._id;
+};

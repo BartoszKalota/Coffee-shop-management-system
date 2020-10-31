@@ -37,3 +37,9 @@ const productSchema = new mongoose.Schema({
 });
 
 export const Product = mongoose.model('Product', productSchema, 'products');
+
+export const addProduct = async (productData) => {
+  const productInstance = new Product(productData);
+  const result = await productInstance.save();
+  return result._id;
+};

@@ -2,9 +2,11 @@ import mongoose from 'mongoose';
 
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
+  addProduct as dbAddProduct
+} from '../models/products.js';
+import {
   getAllProducts as dbGetAllProducts,
   getProduct as dbGetProduct,
-  addProduct as dbAddProduct,
   updateProduct as dbUpdateProduct,
   deleteProduct as dbDeleteProduct
 } from '../db/products.js';
@@ -45,16 +47,14 @@ export default class Products {
   }
 
   async addProduct(productData) {
-    // validation
+    // validation & db connection
     try {
-      await this.addProductSchema.validateAsync(productData);
+      return await dbAddProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbAddProduct(productData);
   }
 
   async updateProduct(productData) {

@@ -39,7 +39,7 @@ ordersRouter.get('/:id', async (req, res) => {
   }
 });
 
-ordersRouter.post('/:id?', async (req, res) => {
+ordersRouter.post('/', async (req, res) => {
   console.log(`POST Order`);
   console.log(req.body);
   try {

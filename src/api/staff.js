@@ -10,14 +10,29 @@ export const staffRouter = express.Router();
 
 staffRouter.get('/', (req, res) => {
   res.json({
-    availableMethods: ['GET /all', 'GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
+    availableMethods: [
+      'GET /all',
+      'GET /all?ratingAbove&ratingBelow&position',
+      'GET /:id',
+      'POST',
+      'PUT /:id',
+      'DELETE /:id'
+    ]
   });
 });
 
 staffRouter.get('/all', async (req, res) => {
-  console.log('GET Staff - All available employees');
+  // message
+  const searchFilters = req.query;
+  const areFiltersUsed = !!Object.keys(searchFilters).length;
+  if (!areFiltersUsed) {
+    console.log('GET Staff - All available employees');
+  }
+  const usedFilters = Object.keys(searchFilters).map(queryKey => ` * ${queryKey}: ${searchFilters[queryKey]}`);
+  console.log(`GET Staff - Used filters: \n${usedFilters.join('\n')}`);
+  // data
   try {
-    const foundItems = await staff.getAllEmployees();
+    const foundItems = await staff.getAllEmployees(searchFilters);
     console.log(foundItems);
     res.json(foundItems);
   } catch (err) {
@@ -26,7 +41,9 @@ staffRouter.get('/all', async (req, res) => {
 });
 
 staffRouter.get('/:id', async (req, res) => {
+  // message
   console.log(`GET Staff id:${req.params.id}`);
+  // data
   try {
     const foundItem = await staff.getEmployee(req.params.id);
     if (foundItem) {
@@ -39,9 +56,11 @@ staffRouter.get('/:id', async (req, res) => {
   }
 });
 
-staffRouter.post('/:id?', async (req, res) => {
+staffRouter.post('/', async (req, res) => {
+  // message
   console.log(`POST Staff`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const addResult = await staff.addEmployee( { _id: req.params.id, ...req.body } );
@@ -58,8 +77,10 @@ staffRouter.post('/:id?', async (req, res) => {
 });
 
 staffRouter.put('/:id', async (req, res) => {
+  // message
   console.log(`PUT Staff id:${req.params.id}`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const updateResult = await staff.updateEmployee( { _id: req.params.id, ...req.body } );
@@ -76,7 +97,9 @@ staffRouter.put('/:id', async (req, res) => {
 });
 
 staffRouter.delete('/:id', async (req ,res) => {
+  // message
   console.log(`DELETE Staff id:${req.params.id}`);
+  // data
   try {
     const deleteResult = await staff.deleteEmployee(req.params.id);
     if (deleteResult) {

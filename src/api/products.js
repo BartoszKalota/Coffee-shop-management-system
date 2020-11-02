@@ -39,7 +39,7 @@ productsRouter.get('/:id', async (req, res) => {
   }
 });
 
-productsRouter.post('/:id?', async (req, res) => {
+productsRouter.post('/', async (req, res) => {
   console.log(`POST Product`);
   console.log(req.body);
   try {

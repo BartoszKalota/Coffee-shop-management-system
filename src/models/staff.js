@@ -33,7 +33,8 @@ const employeeSchema = new mongoose.Schema({
 
 export const Employee = mongoose.model('Employee', employeeSchema, 'staff');
 
-export const getAllEmployees = async () => {
+export const getAllEmployees = async (searchFilters) => {
+  console.log(searchFilters);
   return await Employee
     .find()
     .exec();

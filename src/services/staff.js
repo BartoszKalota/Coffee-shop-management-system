@@ -8,9 +8,9 @@ import {
 } from '../models/staff.js';
 
 export default class Staff {
-  async getAllEmployees() {
+  async getAllEmployees(searchFilters) {
     // db connection
-    return await dbGetAllEmployees();
+    return await dbGetAllEmployees(searchFilters);
   }
 
   async getEmployee(employeeId) {

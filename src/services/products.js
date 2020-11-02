@@ -1,5 +1,3 @@
-import Joi from '@hapi/joi';
-
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
   getAllProducts as dbGetAllProducts,
@@ -7,33 +5,9 @@ import {
   addProduct as dbAddProduct,
   updateProduct as dbUpdateProduct,
   deleteProduct as dbDeleteProduct
-} from '../db/products.js';
+} from '../models/products.js';
 
 export default class Products {
-  productUpdateSchema = Joi.object().keys({
-    _id: Joi.string().length(24).required(),
-    name: Joi.string(),
-    brand: Joi.string(),
-    lastOrderDate: Joi.date(),
-    unitPrice: Joi.number(),
-    supplierName: Joi.string(),
-    available: Joi.number(),
-    expirationDate: Joi.date(),
-    categories: Joi.array().items(
-      Joi.string().valid('coffee'),
-      Joi.string().valid('food'),
-      Joi.string().valid('accessories'),
-      Joi.string().valid('equipment'),
-      Joi.string().valid('premium')
-    )
-  });
-
-  productSchema = this.productUpdateSchema.options({ presence: 'required' });
-
-  addProductSchema = this.productSchema.keys({
-    _id: Joi.any().strip().optional()
-  });
-
   async getAllProducts() {
     // db connection
     return await dbGetAllProducts();
@@ -45,41 +19,35 @@ export default class Products {
   }
 
   async addProduct(productData) {
-    // validation
+    // validation & db connection
     try {
-      await this.addProductSchema.validateAsync(productData);
+      return await dbAddProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbAddProduct(productData);
   }
 
   async updateProduct(productData) {
-    // validation
+    // validation & db connection
     try {
-      await this.productUpdateSchema.validateAsync(productData);
+      return await dbUpdateProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbUpdateProduct(productData);
   }
 
   async deleteProduct(productId) {
-    // validation
+    // validation & db connection
     try {
-      await Joi.string().length(24).validateAsync(productId);
+      return await dbDeleteProduct(productId);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
       error.reason = err.message;
       throw error;
     }
-    // db connection
-    return await dbDeleteProduct(productId);
   }
 }

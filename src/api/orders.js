@@ -10,8 +10,17 @@ export const ordersRouter = express.Router();
 
 ordersRouter.get('/', (req, res) => {
   res.json({
-    availableMethods: ['GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
+    availableMethods: ['GET /all', 'GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
   });
+});
+
+ordersRouter.get('/all', async (req, res) => {
+  console.log('GET Orders - All available orders');
+  try {
+    res.json(await orders.getAllOrders());
+  } catch (err) {
+    errorResponse(err, res);
+  }
 });
 
 ordersRouter.get('/:id', async (req, res) => {

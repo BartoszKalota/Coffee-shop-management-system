@@ -48,6 +48,12 @@ const orderSchema = new mongoose.Schema({
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
 
+export const getAllOrders = async () => {
+  return await Order
+    .find()
+    .exec();
+};
+
 export const getOrder = async (orderId) => {
   return await Order
     .findById(orderId)

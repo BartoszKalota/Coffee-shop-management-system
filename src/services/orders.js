@@ -1,5 +1,6 @@
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getAllOrders as dbGetAllOrders,
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
   updateOrder as dbUpdateOrder,
@@ -24,6 +25,11 @@ export default class Orders {
       console.log(`Missing products: ${missingIds.join(', ')}`);
       throw new Error(PEER_ERROR);
     }
+  }
+
+  async getAllOrders() {
+    // db connection
+    return await dbGetAllOrders();
   }
 
   async getOrder(orderId) {

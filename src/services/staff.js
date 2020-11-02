@@ -1,5 +1,6 @@
 import { VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getAllEmployees as dbGetAllEmployees,
   getEmployee as dbGetEmployee,
   addEmployee as dbAddEmployee,
   updateEmployee as dbUpdateEmployee,
@@ -7,6 +8,11 @@ import {
 } from '../models/staff.js';
 
 export default class Staff {
+  async getAllEmployees() {
+    // db connection
+    return await dbGetAllEmployees();
+  }
+
   async getEmployee(employeeId) {
     // db connection
     return await dbGetEmployee(employeeId);

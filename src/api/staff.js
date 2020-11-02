@@ -10,8 +10,17 @@ export const staffRouter = express.Router();
 
 staffRouter.get('/', (req, res) => {
   res.json({
-    availableMethods: ['GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
+    availableMethods: ['GET /all', 'GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
   });
+});
+
+staffRouter.get('/all', async (req, res) => {
+  console.log('GET Staff - All available employees');
+  try {
+    res.json(await staff.getAllEmployees());
+  } catch (err) {
+    errorResponse(err, res);
+  }
 });
 
 staffRouter.get('/:id', async (req, res) => {

@@ -33,6 +33,12 @@ const employeeSchema = new mongoose.Schema({
 
 export const Employee = mongoose.model('Employee', employeeSchema, 'staff');
 
+export const getAllEmployees = async () => {
+  return await Employee
+    .find()
+    .exec();
+};
+
 export const getEmployee = async (employeeId) => {
   return await Employee
     .findById(employeeId)

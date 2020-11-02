@@ -30,6 +30,7 @@ productsRouter.get('/:id', async (req, res) => {
   try {
     const foundItem = await products.getProduct(req.params.id);
     if (foundItem) {
+      console.log(foundItem);
       res.json(foundItem);
     }
     throw new Error(NOT_FOUND);

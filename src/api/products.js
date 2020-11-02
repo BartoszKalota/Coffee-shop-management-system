@@ -17,7 +17,9 @@ productsRouter.get('/', (req, res) => {
 productsRouter.get('/all', async (req, res) => {
   console.log('GET Products - All available products');
   try {
-    res.json(await products.getAllProducts());
+    const foundItems = await products.getAllProducts();
+    console.log(foundItems);
+    res.json(foundItems);
   } catch (err) {
     errorResponse(err, res);
   }

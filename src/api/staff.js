@@ -17,7 +17,9 @@ staffRouter.get('/', (req, res) => {
 staffRouter.get('/all', async (req, res) => {
   console.log('GET Staff - All available employees');
   try {
-    res.json(await staff.getAllEmployees());
+    const foundItems = await staff.getAllEmployees();
+    console.log(foundItems);
+    res.json(foundItems);
   } catch (err) {
     errorResponse(err, res);
   }

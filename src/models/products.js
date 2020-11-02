@@ -44,7 +44,7 @@ export const getAllProducts = async () => {
     .exec();
 };
 
-export const getSelectedProducts = async (productIds) => {
+export const getSelectedProductsForOrder = async (productIds) => {
   return await Product
     .find({
       _id: {

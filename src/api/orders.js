@@ -17,7 +17,9 @@ ordersRouter.get('/', (req, res) => {
 ordersRouter.get('/all', async (req, res) => {
   console.log('GET Orders - All available orders');
   try {
-    res.json(await orders.getAllOrders());
+    const foundItems = await orders.getAllOrders();
+    console.log(foundItems);
+    res.json(foundItems);
   } catch (err) {
     errorResponse(err, res);
   }

@@ -7,7 +7,7 @@ import {
   deleteOrder as dbDeleteOrder
 } from '../models/orders.js';
 import { getEmployee } from '../models/staff.js';
-import { getSelectedProducts } from '../models/products.js';
+import { getSelectedProductsForOrder } from '../models/products.js';
 
 export default class Orders {
   static async _checkIfEmployeeExists(employeeId) {
@@ -17,7 +17,7 @@ export default class Orders {
 
   static async _checkIfProductsExist(products) {
     const productIds = products.map(product => product._id);
-    const dbProducts = await getSelectedProducts(productIds);
+    const dbProducts = await getSelectedProductsForOrder(productIds);
     if (dbProducts.length !== productIds.length) {
       const missingIds = productIds.filter(
         productId => dbProducts.findIndex(product => product._id === productId) === -1

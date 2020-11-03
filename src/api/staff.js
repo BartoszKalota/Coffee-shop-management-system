@@ -27,9 +27,10 @@ staffRouter.get('/all', async (req, res) => {
   const areFiltersUsed = !!Object.keys(searchFilters).length;
   if (!areFiltersUsed) {
     console.log('GET Staff - All available employees');
+  } else {
+    const usedFilters = Object.keys(searchFilters).map(queryKey => ` * ${queryKey}: ${searchFilters[queryKey]}`);
+    console.log(`GET Staff - Used filters: \n${usedFilters.join('\n')}`);
   }
-  const usedFilters = Object.keys(searchFilters).map(queryKey => ` * ${queryKey}: ${searchFilters[queryKey]}`);
-  console.log(`GET Staff - Used filters: \n${usedFilters.join('\n')}`);
   // data
   try {
     const foundItems = await staff.getAllEmployees(searchFilters);

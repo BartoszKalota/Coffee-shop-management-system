@@ -33,10 +33,32 @@ const employeeSchema = new mongoose.Schema({
 
 export const Employee = mongoose.model('Employee', employeeSchema, 'staff');
 
-export const getAllEmployees = async (searchFilters) => {
-  console.log(searchFilters);
+export const getAllEmployees = async ({ ratingAbove, ratingBelow, position }) => {
+  const query = {};
+  // include searchFilters to query
+  if (ratingAbove || ratingBelow) {
+    query.$and = [];
+    if (ratingAbove) {
+      query.$and.push({
+        rating: {
+          $gte: +ratingAbove
+        }
+      });
+    }
+    if (ratingBelow) {
+      query.$and.push({
+        rating: {
+          $lte: +ratingBelow
+        }
+      });
+    }
+  }
+  if (position) {
+    query.position = position;
+  }
+  
   return await Employee
-    .find()
+    .find(query)
     .exec();
 };
 

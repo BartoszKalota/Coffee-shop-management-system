@@ -38,10 +38,25 @@ const productSchema = new mongoose.Schema({
 
 export const Product = mongoose.model('Product', productSchema, 'products');
 
-export const getAllProducts = async (searchFilters) => {
-  console.log(searchFilters);
+export const getAllProducts = async ({ amountAtLeast, brand, categories }) => {
+  const query = {};
+  // include searchFilters to query
+  if (amountAtLeast) {
+    query.available = {
+      $gte: +amountAtLeast
+    };
+  }
+  if (brand) {
+    query.brand = brand;
+  }
+  if (categories) {
+    query.categories = {
+      $all: categories.split(',')
+    }
+  }
+  
   return await Product
-    .find()
+    .find(query)
     .exec();
 };
 

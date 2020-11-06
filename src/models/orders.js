@@ -48,10 +48,29 @@ const orderSchema = new mongoose.Schema({
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
 
-export const getAllOrders = async (searchFilters) => {
-  console.log(searchFilters);
+export const getAllOrders = async ({ dateFrom, dateTo }) => {
+  const query = {};
+  // include searchFilters to query
+  if (dateFrom || dateTo) {
+    query.$and = [];
+    if (dateFrom) {
+      query.$and.push({
+        date: {
+          $gte: dateFrom  // will use getDate function here
+        }
+      });
+    }
+    if (dateTo) {
+      query.$and.push({
+        date: {
+          $lte: dateTo  // will use getDate function here
+        }
+      });
+    }
+  }
+  console.log(query);
   return await Order
-    .find()
+    .find() // will include query here, after the creation of getDate function
     .exec();
 };
 

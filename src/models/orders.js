@@ -48,7 +48,8 @@ const orderSchema = new mongoose.Schema({
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
 
-export const getAllOrders = async () => {
+export const getAllOrders = async (searchFilters) => {
+  console.log(searchFilters);
   return await Order
     .find()
     .exec();

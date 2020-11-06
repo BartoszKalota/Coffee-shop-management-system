@@ -27,9 +27,9 @@ export default class Orders {
     }
   }
 
-  async getAllOrders() {
+  async getAllOrders(searchFilters) {
     // db connection
-    return await dbGetAllOrders();
+    return await dbGetAllOrders(searchFilters);
   }
 
   async getOrder(orderId) {

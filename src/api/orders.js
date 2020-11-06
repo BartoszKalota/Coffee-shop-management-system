@@ -10,14 +10,30 @@ export const ordersRouter = express.Router();
 
 ordersRouter.get('/', (req, res) => {
   res.json({
-    availableMethods: ['GET /all', 'GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
+    availableMethods: [
+      'GET /all',
+      'GET /all?dateFrom&dateTo',
+      'GET /:id',
+      'POST',
+      'PUT /:id',
+      'DELETE /:id'
+    ]
   });
 });
 
 ordersRouter.get('/all', async (req, res) => {
-  console.log('GET Orders - All available orders');
+  // message
+  const searchFilters = req.query;
+  const areFiltersUsed = !!Object.keys(searchFilters).length;
+  if (!areFiltersUsed) {
+    console.log('GET Orders - All available orders');
+  } else {
+    const usedFilters = Object.keys(searchFilters).map(queryKey => ` * ${queryKey}: ${searchFilters[queryKey]}`);
+    console.log(`GET Orders - Used filters: \n${usedFilters.join('\n')}`);
+  }
+  // data
   try {
-    const foundItems = await orders.getAllOrders();
+    const foundItems = await orders.getAllOrders(searchFilters);
     console.log(foundItems);
     res.json(foundItems);
   } catch (err) {
@@ -26,7 +42,9 @@ ordersRouter.get('/all', async (req, res) => {
 });
 
 ordersRouter.get('/:id', async (req, res) => {
+  // message
   console.log(`GET Order id:${req.params.id}`);
+  // data
   try {
     const foundItem = await orders.getOrder(req.params.id);
     if (foundItem) {
@@ -40,8 +58,10 @@ ordersRouter.get('/:id', async (req, res) => {
 });
 
 ordersRouter.post('/', async (req, res) => {
+  // message
   console.log(`POST Order`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const addResult = await orders.addOrder( { _id: req.params.id , ...req.body } );
@@ -58,8 +78,10 @@ ordersRouter.post('/', async (req, res) => {
 });
 
 ordersRouter.put('/:id', async (req, res) => {
+  // message
   console.log(`PUT Order id:${req.params.id}`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const updateResult = await orders.updateOrder( { _id: req.params.id, ...req.body } );
@@ -76,7 +98,9 @@ ordersRouter.put('/:id', async (req, res) => {
 });
 
 ordersRouter.delete('/:id', async (req ,res) => {
+  // message
   console.log(`DELETE Order id:${req.params.id}`);
+  // data
   try {
     const deleteResult = await orders.deleteOrder(req.params.id);
     if (deleteResult) {

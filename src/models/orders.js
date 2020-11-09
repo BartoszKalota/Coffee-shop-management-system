@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { Employee } from './staff.js';
+import { getDate } from '../utils/date.js';
 
 const orderSchema = new mongoose.Schema({
   date: {
@@ -56,21 +57,21 @@ export const getAllOrders = async ({ dateFrom, dateTo }) => {
     if (dateFrom) {
       query.$and.push({
         date: {
-          $gte: dateFrom  // will use getDate function here
+          $gte: getDate(dateFrom)
         }
       });
     }
     if (dateTo) {
       query.$and.push({
         date: {
-          $lte: dateTo  // will use getDate function here
+          $lte: getDate(dateTo)
         }
       });
     }
   }
-  console.log(query);
+
   return await Order
-    .find() // will include query here, after the creation of getDate function
+    .find(query)
     .exec();
 };
 

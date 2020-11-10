@@ -1,12 +1,13 @@
 import { PEER_ERROR, VALIDATION_ERROR } from '../constants/error.js';
 import {
+  getAllOrders as dbGetAllOrders,
   getOrder as dbGetOrder,
   addOrder as dbAddOrder,
   updateOrder as dbUpdateOrder,
   deleteOrder as dbDeleteOrder
 } from '../models/orders.js';
 import { getEmployee } from '../models/staff.js';
-import { getSelectedProducts } from '../models/products.js';
+import { getSelectedProductsForOrder } from '../models/products.js';
 
 export default class Orders {
   static async _checkIfEmployeeExists(employeeId) {
@@ -16,7 +17,7 @@ export default class Orders {
 
   static async _checkIfProductsExist(products) {
     const productIds = products.map(product => product._id);
-    const dbProducts = await getSelectedProducts(productIds);
+    const dbProducts = await getSelectedProductsForOrder(productIds);
     if (dbProducts.length !== productIds.length) {
       const missingIds = productIds.filter(
         productId => dbProducts.findIndex(product => product._id === productId) === -1
@@ -24,6 +25,11 @@ export default class Orders {
       console.log(`Missing products: ${missingIds.join(', ')}`);
       throw new Error(PEER_ERROR);
     }
+  }
+
+  async getAllOrders(searchFilters) {
+    // db connection
+    return await dbGetAllOrders(searchFilters);
   }
 
   async getOrder(orderId) {

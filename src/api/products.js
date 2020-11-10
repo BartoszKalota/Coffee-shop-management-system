@@ -10,24 +10,45 @@ export const productsRouter = express.Router();
 
 productsRouter.get('/', (req, res) => {
   res.json({
-    availableMethods: ['GET /all', 'GET /:id', 'POST', 'PUT /:id', 'DELETE /:id']
+    availableMethods: [
+      'GET /all',
+      'GET /all?amountAtLeast&brand&categories',
+      'GET /:id',
+      'POST',
+      'PUT /:id',
+      'DELETE /:id'
+    ]
   });
 });
 
 productsRouter.get('/all', async (req, res) => {
-  console.log('GET Products - All available products');
+  // message
+  const searchFilters = req.query;
+  const areFiltersUsed = !!Object.keys(searchFilters).length;
+  if (!areFiltersUsed) {
+    console.log('GET Products - All available products');
+  } else {
+    const usedFilters = Object.keys(searchFilters).map(queryKey => ` * ${queryKey}: ${searchFilters[queryKey]}`);
+    console.log(`GET Products - Used filters: \n${usedFilters.join('\n')}`);
+  }
+  // data
   try {
-    res.json(await products.getAllProducts());
+    const foundItems = await products.getAllProducts(searchFilters);
+    console.log(foundItems);
+    res.json(foundItems);
   } catch (err) {
     errorResponse(err, res);
   }
 });
 
 productsRouter.get('/:id', async (req, res) => {
+  // message
   console.log(`GET Product id:${req.params.id}`);
+  // data
   try {
     const foundItem = await products.getProduct(req.params.id);
     if (foundItem) {
+      console.log(foundItem);
       res.json(foundItem);
     }
     throw new Error(NOT_FOUND);
@@ -36,9 +57,11 @@ productsRouter.get('/:id', async (req, res) => {
   }
 });
 
-productsRouter.post('/:id?', async (req, res) => {
+productsRouter.post('/', async (req, res) => {
+  // message
   console.log(`POST Product`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const addResult = await products.addProduct( { _id: req.params.id, ...req.body } );
@@ -55,8 +78,10 @@ productsRouter.post('/:id?', async (req, res) => {
 });
 
 productsRouter.put('/:id', async (req, res) => {
+  // message
   console.log(`PUT Product id:${req.params.id}`);
   console.log(req.body);
+  // data
   try {
     if (!Object.keys(req.body).length) throw new Error(MISSING_DATA);
     const updateResult = await products.updateProduct( { _id: req.params.id, ...req.body } );
@@ -73,7 +98,9 @@ productsRouter.put('/:id', async (req, res) => {
 });
 
 productsRouter.delete('/:id', async (req ,res) => {
+  // message
   console.log(`DELETE Product id:${req.params.id}`);
+  // data
   try {
     const deleteResult = await products.deleteProduct(req.params.id);
     if (deleteResult) {

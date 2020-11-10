@@ -8,9 +8,9 @@ import {
 } from '../models/products.js';
 
 export default class Products {
-  async getAllProducts() {
+  async getAllProducts(searchFilters) {
     // db connection
-    return await dbGetAllProducts();
+    return await dbGetAllProducts(searchFilters);
   }
   
   async getProduct(productId) {

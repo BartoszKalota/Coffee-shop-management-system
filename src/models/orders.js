@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { Employee } from './staff.js';
+import { getDate } from '../utils/date.js';
 
 const orderSchema = new mongoose.Schema({
   date: {
@@ -47,6 +48,32 @@ const orderSchema = new mongoose.Schema({
 });
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
+
+export const getAllOrders = async ({ dateFrom, dateTo }) => {
+  const query = {};
+  // include searchFilters to query
+  if (dateFrom || dateTo) {
+    query.$and = [];
+    if (dateFrom) {
+      query.$and.push({
+        date: {
+          $gte: getDate(dateFrom)
+        }
+      });
+    }
+    if (dateTo) {
+      query.$and.push({
+        date: {
+          $lte: getDate(dateTo)
+        }
+      });
+    }
+  }
+
+  return await Order
+    .find(query)
+    .exec();
+};
 
 export const getOrder = async (orderId) => {
   return await Order

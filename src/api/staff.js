@@ -12,7 +12,7 @@ staffRouter.get('/', (req, res) => {
   res.json({
     availableMethods: [
       'GET /all',
-      'GET /all?ratingAbove&ratingBelow&position',
+      'GET /all?ratingAbove&ratingBelow&position&page',
       'GET /:id',
       'POST',
       'PUT /:id',

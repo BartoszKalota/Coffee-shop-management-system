@@ -12,7 +12,7 @@ productsRouter.get('/', (req, res) => {
   res.json({
     availableMethods: [
       'GET /all',
-      'GET /all?amountAtLeast&brand&categories',
+      'GET /all?amountAtLeast&brand&categories&page',
       'GET /:id',
       'POST',
       'PUT /:id',

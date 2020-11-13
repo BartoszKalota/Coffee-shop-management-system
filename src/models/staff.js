@@ -72,6 +72,7 @@ export const getAllEmployees = async ({ ratingAbove, ratingBelow, position, page
 export const getEmployee = async (employeeId) => {
   return await Employee
     .findById(employeeId)
+    .lean()
     .exec();
 };
 

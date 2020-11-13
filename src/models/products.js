@@ -108,12 +108,14 @@ export const getSelectedProductsForOrder = async (productIds) => {
         '$in': productIds
       }
     })
+    .lean()
     .exec();
 };
 
 export const getProduct = async (productId) => {
   return await Product
     .findById(productId)
+    .lean()
     .exec();
 };
 

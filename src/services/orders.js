@@ -27,13 +27,13 @@ export default class Orders {
     }
   }
 
-  static async _updateProductsAmount(products, isSubtract) {
+  static async _updateProductsAmount(products) {
     const productsData = products.map(product => {
       const copy = { ...product };
       delete copy.unitPrice;
       return copy;
     });
-    await updateProductsAmountDueToOrder(productsData, isSubtract);
+    await updateProductsAmountDueToOrder(productsData);
   }
 
   async getAllOrders(searchFilters) {
@@ -52,7 +52,7 @@ export default class Orders {
       await Orders._checkIfEmployeeExists(orderData.staffId);
       await Orders._checkIfProductsExist(orderData.products);
       // update an amount of ordered products from the 'products' collection
-      await Orders._updateProductsAmount(orderData.products, true);
+      await Orders._updateProductsAmount(orderData.products);
       // validation & db connection
       return await dbAddOrder(orderData);
     } catch (err) {
@@ -64,12 +64,25 @@ export default class Orders {
 
   async updateOrder(orderData) {
     try {
-      // check peer resources
       if (orderData.staffId) {
+        // check peer resource
         await Orders._checkIfEmployeeExists(orderData.staffId);
       }
       if (orderData.products) {
+        // check peer resource
         await Orders._checkIfProductsExist(orderData.products);
+        // update an amount of ordered products from the 'products' collection
+        const oldOrder = await dbGetOrder(orderData._id);
+        const oldOrderedProducts = oldOrder.products;
+        const productsWithAmountDifference = oldOrderedProducts.map((oldOrderedProduct, i) => {
+          const difference = oldOrderedProduct.amount - orderData.products[i].amount;
+          return {
+            _id: oldOrderedProduct._id,
+            name: oldOrderedProduct.name,
+            amount: difference
+          };
+        });
+        await Orders._updateProductsAmount(productsWithAmountDifference);
       }
       // validation & db connection
       return await dbUpdateOrder(orderData);

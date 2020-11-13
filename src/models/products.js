@@ -42,7 +42,7 @@ const productSchema = new mongoose.Schema({
 
 export const Product = mongoose.model('Product', productSchema, 'products');
 
-export const updateProductsAmountDueToOrder = async (productsData, isSubtract) => {
+export const updateProductsAmountDueToOrder = async (productsData) => {
   // 'for' loop approach since map/forEach methods did not finish Promises
   const updateResultsArr = [];
   for (let i = 0; i < productsData.length; i++) {
@@ -55,7 +55,7 @@ export const updateProductsAmountDueToOrder = async (productsData, isSubtract) =
         },
         {
           '$inc': {
-            'available': isSubtract ? -amount : amount
+            'available': amount
           }
         },
         { upsert: false }

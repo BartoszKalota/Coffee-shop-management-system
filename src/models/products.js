@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { PAGE_SIZE } from '../constants/db.js';
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -38,7 +40,7 @@ const productSchema = new mongoose.Schema({
 
 export const Product = mongoose.model('Product', productSchema, 'products');
 
-export const getAllProducts = async ({ amountAtLeast, brand, categories }) => {
+export const getAllProducts = async ({ amountAtLeast, brand, categories, page = 0 }) => {
   const query = {};
   // include searchFilters to query
   if (amountAtLeast) {
@@ -54,9 +56,14 @@ export const getAllProducts = async ({ amountAtLeast, brand, categories }) => {
       $all: categories.split(',')
     }
   }
+
+  // page = 1 results as skip(0) (really first page)
+  const pageNumber = page > 0 ? (+page - 1) : 0;
   
   return await Product
     .find(query)
+    .limit(PAGE_SIZE)
+    .skip(PAGE_SIZE * pageNumber)
     .exec();
 };
 

@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { PAGE_SIZE } from '../constants/db.js';
+
 const employeeSchema = new mongoose.Schema({
   firstName: {
     type: String,
@@ -33,7 +35,7 @@ const employeeSchema = new mongoose.Schema({
 
 export const Employee = mongoose.model('Employee', employeeSchema, 'staff');
 
-export const getAllEmployees = async ({ ratingAbove, ratingBelow, position }) => {
+export const getAllEmployees = async ({ ratingAbove, ratingBelow, position, page = 0 }) => {
   const query = {};
   // include searchFilters to query
   if (ratingAbove || ratingBelow) {
@@ -57,8 +59,13 @@ export const getAllEmployees = async ({ ratingAbove, ratingBelow, position }) =>
     query.position = position;
   }
   
+  // page = 1 results as skip(0) (really first page)
+  const pageNumber = page > 0 ? (+page - 1) : 0;
+
   return await Employee
     .find(query)
+    .limit(PAGE_SIZE)
+    .skip(PAGE_SIZE * pageNumber)
     .exec();
 };
 

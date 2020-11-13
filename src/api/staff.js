@@ -12,7 +12,7 @@ staffRouter.get('/', (req, res) => {
   res.json({
     availableMethods: [
       'GET /all',
-      'GET /all?ratingAbove&ratingBelow&position',
+      'GET /all?ratingAbove&ratingBelow&position&page',
       'GET /:id',
       'POST',
       'PUT /:id',
@@ -50,8 +50,9 @@ staffRouter.get('/:id', async (req, res) => {
     if (foundItem) {
       console.log(foundItem);
       res.json(foundItem);
+    } else {
+      throw new Error(NOT_FOUND);
     }
-    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -70,8 +71,9 @@ staffRouter.post('/', async (req, res) => {
       res.json({
         ok: true
       });
+    } else {
+      throw new Error(CONFLICT);
     }
-    throw new Error(CONFLICT);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -90,8 +92,9 @@ staffRouter.put('/:id', async (req, res) => {
       res.json({
         ok: true
       });
+    } else {
+      throw new Error(NOT_FOUND);
     }
-    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }
@@ -108,8 +111,9 @@ staffRouter.delete('/:id', async (req ,res) => {
       res.json({
         ok: true
       });
+    } else {
+      throw new Error(NOT_FOUND);
     }
-    throw new Error(NOT_FOUND);
   } catch (err) {
     errorResponse(err, res);
   }

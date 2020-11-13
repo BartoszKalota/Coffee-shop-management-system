@@ -34,7 +34,8 @@ const orderSchema = new mongoose.Schema({
     },
     amount: {
       type: Number,
-      required: true
+      required: true,
+      min: [1, 'Must be at least one ordered product']
     },
     unitPrice: {
       type: Number,
@@ -84,6 +85,7 @@ export const getAllOrders = async ({ dateFrom, dateTo, page = 0 }) => {
 export const getOrder = async (orderId) => {
   return await Order
     .findById(orderId)
+    .lean()
     .exec();
 };
 

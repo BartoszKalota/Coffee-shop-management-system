@@ -52,7 +52,11 @@ export default class Orders {
       await Orders._checkIfEmployeeExists(orderData.staffId);
       await Orders._checkIfProductsExist(orderData.products);
       // update an amount of ordered products from the 'products' collection
-      await Orders._updateProductsAmount(orderData.products);
+      const productsWithAmountToSubtract = orderData.products.map(product => ({
+        ...product,
+        amount: product.amount * (-1)
+      }));
+      await Orders._updateProductsAmount(productsWithAmountToSubtract);
       // validation & db connection
       return await dbAddOrder(orderData);
     } catch (err) {

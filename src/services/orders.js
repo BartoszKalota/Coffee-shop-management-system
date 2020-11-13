@@ -7,7 +7,7 @@ import {
   deleteOrder as dbDeleteOrder
 } from '../models/orders.js';
 import { getEmployee } from '../models/staff.js';
-import { getSelectedProductsForOrder } from '../models/products.js';
+import { getSelectedProductsForOrder, updateProductsAmountDueToOrder } from '../models/products.js';
 
 export default class Orders {
   static async _checkIfEmployeeExists(employeeId) {
@@ -27,6 +27,15 @@ export default class Orders {
     }
   }
 
+  static async _updateProductsAmount(products, isSubtract) {
+    const productsData = products.map(product => {
+      const copy = { ...product };
+      delete copy.unitPrice;
+      return copy;
+    });
+    await updateProductsAmountDueToOrder(productsData, isSubtract);
+  }
+
   async getAllOrders(searchFilters) {
     // db connection
     return await dbGetAllOrders(searchFilters);
@@ -42,6 +51,8 @@ export default class Orders {
       // check peer resources
       await Orders._checkIfEmployeeExists(orderData.staffId);
       await Orders._checkIfProductsExist(orderData.products);
+      // update an amount of ordered products from the 'products' collection
+      await Orders._updateProductsAmount(orderData.products, true);
       // validation & db connection
       return await dbAddOrder(orderData);
     } catch (err) {

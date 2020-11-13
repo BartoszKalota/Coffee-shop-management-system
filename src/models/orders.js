@@ -34,7 +34,8 @@ const orderSchema = new mongoose.Schema({
     },
     amount: {
       type: Number,
-      required: true
+      required: true,
+      min: [1, 'Must be at least one ordered product']
     },
     unitPrice: {
       type: Number,

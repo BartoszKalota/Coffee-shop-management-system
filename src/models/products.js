@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { PAGE_SIZE } from '../constants/db.js';
+import { PRODUCT_NOT_AVAILABLE } from '../constants/error.js';
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -25,7 +26,8 @@ const productSchema = new mongoose.Schema({
   },
   available: {
     type: Number,
-    required: true
+    required: true,
+    min: [1, 'Must be at least one available product']
   },
   expirationDate: {
     type: Date,
@@ -39,6 +41,38 @@ const productSchema = new mongoose.Schema({
 });
 
 export const Product = mongoose.model('Product', productSchema, 'products');
+
+export const updateProductsAmountDueToOrder = async (productsData, isSubtract) => {
+  // 'for' loop approach since map/forEach methods did not finish Promises
+  const updateResultsArr = [];
+  for (let i = 0; i < productsData.length; i++) {
+    const { _id, amount } = productsData[i];
+    const result = await Product
+      .updateOne(
+        {
+          _id: mongoose.Types.ObjectId(_id),
+          available: { '$gt': 0 } // it prevents to receive negative product amount when '$inc'
+        },
+        {
+          '$inc': {
+            'available': isSubtract ? -amount : amount
+          }
+        },
+        { upsert: false }
+      )
+      .exec();
+
+    updateResultsArr.push(result.nModified);
+  }
+  // Error: product amount is going to be < 0
+  const missingProd = updateResultsArr.filter(res => res === 0);
+  if (missingProd.length) {
+    const index = updateResultsArr.findIndex(res => res === 0);
+    const missingProdName = productsData[index].name;
+    console.log(`Ordered product - ${missingProdName} - is not available, amount = 0`);
+    throw new Error(PRODUCT_NOT_AVAILABLE);
+  }
+};
 
 export const getAllProducts = async ({ amountAtLeast, brand, categories, page = 0 }) => {
   const query = {};

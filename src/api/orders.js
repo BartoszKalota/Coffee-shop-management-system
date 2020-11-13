@@ -12,7 +12,7 @@ ordersRouter.get('/', (req, res) => {
   res.json({
     availableMethods: [
       'GET /all',
-      'GET /all?dateFrom&dateTo',
+      'GET /all?dateFrom&dateTo&page',
       'GET /:id',
       'POST',
       'PUT /:id',

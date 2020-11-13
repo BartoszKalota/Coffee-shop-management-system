@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import { PAGE_SIZE } from '../constants/db.js';
 import { Employee } from './staff.js';
 import { getDate } from '../utils/date.js';
 
@@ -49,7 +50,7 @@ const orderSchema = new mongoose.Schema({
 
 export const Order = mongoose.model('Order', orderSchema, 'orders');
 
-export const getAllOrders = async ({ dateFrom, dateTo }) => {
+export const getAllOrders = async ({ dateFrom, dateTo, page = 0 }) => {
   const query = {};
   // include searchFilters to query
   if (dateFrom || dateTo) {
@@ -70,8 +71,13 @@ export const getAllOrders = async ({ dateFrom, dateTo }) => {
     }
   }
 
+  // page = 1 results as skip(0) (really first page)
+  const pageNumber = page > 0 ? (+page - 1) : 0;
+
   return await Order
     .find(query)
+    .limit(PAGE_SIZE)
+    .skip(PAGE_SIZE * pageNumber)
     .exec();
 };
 

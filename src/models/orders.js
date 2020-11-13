@@ -85,6 +85,7 @@ export const getAllOrders = async ({ dateFrom, dateTo, page = 0 }) => {
 export const getOrder = async (orderId) => {
   return await Order
     .findById(orderId)
+    .lean()
     .exec();
 };
 

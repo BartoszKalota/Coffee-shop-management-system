@@ -99,6 +99,10 @@ export default class Orders {
 
   async deleteOrder(orderId) {
     try {
+      // update an amount of ordered products from the 'products' collection
+      const oldOrder = await dbGetOrder(orderId);
+      const productsWithAmountToAdd = oldOrder.products;
+      await Orders._updateProductsAmount(productsWithAmountToAdd);
       // validation & db connection
       return await dbDeleteOrder(orderId);
     } catch (err) {

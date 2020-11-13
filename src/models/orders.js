@@ -90,7 +90,11 @@ export const getOrder = async (orderId) => {
 };
 
 export const addOrder = async (orderData) => {
-  const orderInstance = await new Order(orderData);
+  // preparing field 'total' for orderData 
+  const total = orderData.products.reduce((prev, curr) => prev + (curr.amount * curr.unitPrice), 0);
+  const orderDataWithTotal = { ...orderData, total };
+  
+  const orderInstance = await new Order(orderDataWithTotal);
   const result = await orderInstance.save();
   return result._id;
 };

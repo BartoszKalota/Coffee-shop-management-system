@@ -30,8 +30,8 @@ export default class Staff {
   }
 
   async updateEmployee(employeeData) {
-    // validation & db connection
     try {
+      // validation & db connection
       return await dbUpdateEmployee(employeeData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
@@ -41,8 +41,8 @@ export default class Staff {
   }
 
   async deleteEmployee(employeeId) {
-    // validation & db connection
     try {
+      // validation & db connection
       return await dbDeleteEmployee(employeeId);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);

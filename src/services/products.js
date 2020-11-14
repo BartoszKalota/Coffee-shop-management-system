@@ -19,8 +19,8 @@ export default class Products {
   }
 
   async addProduct(productData) {
-    // validation & db connection
     try {
+      // validation & db connection
       return await dbAddProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
@@ -30,8 +30,8 @@ export default class Products {
   }
 
   async updateProduct(productData) {
-    // validation & db connection
     try {
+      // validation & db connection
       return await dbUpdateProduct(productData);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);
@@ -41,8 +41,8 @@ export default class Products {
   }
 
   async deleteProduct(productId) {
-    // validation & db connection
     try {
+      // validation & db connection
       return await dbDeleteProduct(productId);
     } catch (err) {
       const error = new Error(VALIDATION_ERROR);

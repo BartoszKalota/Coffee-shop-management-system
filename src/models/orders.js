@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
     },
     name: {
       type: String,
-      required: true,
+      required: true
     },
     amount: {
       type: Number,
@@ -93,7 +93,7 @@ export const addOrder = async (orderData) => {
   // preparing field 'total' for orderData 
   const total = orderData.products.reduce((prev, curr) => prev + (curr.amount * curr.unitPrice), 0);
   const orderDataWithTotal = { ...orderData, total };
-  
+
   const orderInstance = await new Order(orderDataWithTotal);
   const result = await orderInstance.save();
   return result._id;
@@ -103,17 +103,37 @@ export const updateOrder = async (orderData) => {
   const dataToUpdate = { ...orderData };
   delete dataToUpdate._id;  // need to delete _id for correct update procedure
 
-  const result = await Order
+  const orderBeforeUpdateToGetUnitPrices = orderData.products && await getOrder(orderData._id);
+
+  const internalUpdateOrder = async (data) => await Order
     .updateOne(
       {
         _id: orderData._id
       },
       {
-        '$set': dataToUpdate
+        '$set': data
       },
       { upsert: false }
     )
     .exec();
+
+  const result = await internalUpdateOrder(dataToUpdate);
+
+  // updating field 'total' for updated order
+  if (orderData.products) {
+    const updatedOrder = await getOrder(orderData._id);
+    const unitPrices = orderBeforeUpdateToGetUnitPrices.products.map(product => product.unitPrice);
+    const names = orderBeforeUpdateToGetUnitPrices.products.map(product => product.name);
+    updatedOrder.products = updatedOrder.products.map((product, i) => ({
+      ...product,
+      name: names[i],
+      unitPrice: unitPrices[i]
+    }));
+    const total = updatedOrder.products.reduce((prev, curr) => prev + (curr.amount * curr.unitPrice), 0);
+    updatedOrder.total = total;
+    await internalUpdateOrder(updatedOrder);
+  }
+
   return result.nModified;
 };
 

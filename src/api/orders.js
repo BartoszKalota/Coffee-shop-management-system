@@ -34,7 +34,7 @@ ordersRouter.get('/all', async (req, res) => {
   // data
   try {
     const foundItems = await orders.getAllOrders(searchFilters);
-    console.log(foundItems);
+    console.log(JSON.stringify(foundItems, undefined, 2));
     res.json(foundItems);
   } catch (err) {
     errorResponse(err, res);
@@ -48,7 +48,7 @@ ordersRouter.get('/:id', async (req, res) => {
   try {
     const foundItem = await orders.getOrder(req.params.id);
     if (foundItem) {
-      console.log(foundItem);
+      console.log(JSON.stringify(foundItem, undefined, 2));
       res.json(foundItem);
     } else {
       throw new Error(NOT_FOUND);

@@ -14,7 +14,7 @@ The figure below shows an example of the interaction to find products with appli
 * If an endpoint handles query params (see subsections below), it is not necessary to provide all of them.
 * To add a new order, product or employee to the database, a request body need to satisfy the respective Mongoose model (see the 'Mongoose models' section).
 
-## Orders endpoint
+## Orders endpoints
 * **GET**
   * **/all** - find all orders
   * **/all?dateFrom&dateTo&page** - find orders with applied query params, *e.g.*:
@@ -29,7 +29,7 @@ The figure below shows an example of the interaction to find products with appli
 * **DELETE**
   * **/:id** - delete an order found by ID
 
-## Products endpoint
+## Products endpoints
 * **GET**
   * **/all** - find all products
   * **/all?amountAtLeast&brand&categories&page** - find products with applied query params, *e.g.*:
@@ -45,7 +45,7 @@ The figure below shows an example of the interaction to find products with appli
 * **DELETE**
   * **/:id** - delete a product found by ID
 
-## Staff endpoint
+## Staff endpoints
 * **GET**
   * **/all** - find all employees
   * **/all?ratingAbove&ratingBelow&position&page** - find employees with applied query params, *e.g.*:
@@ -71,7 +71,7 @@ The figure below shows an example of the interaction to find products with appli
   * `products`
   * `staff`
 
-## Mongoose models:
+## Mongoose models
 * In each model, all listed fields are required (unless otherwise stated).
 * Additionally, the order model:
   * checks if indicated employee exists
@@ -82,7 +82,7 @@ The figure below shows an example of the interaction to find products with appli
     * product(s) amount is being increased when the order is deleted.
   * contains `total` field being a calculated result.
 
-### Order model:
+### Order model
 * **date** - `Date` - *e.g.* `2020-11-14`
 * **location** - `String`
 * **paidIn** - `String` - available options: `cash`, `card`
@@ -94,7 +94,7 @@ The figure below shows an example of the interaction to find products with appli
   * **unitPrice** - `Number`
 * **total** - *Do not provide it*. This field is a calculated result.
 
-### Product model:
+### Product model
 * **name** - `String`
 * **brand** - `String`
 * **lastOrderDate** - `Date` - *e.g.* `2020-11-12`
@@ -104,7 +104,7 @@ The figure below shows an example of the interaction to find products with appli
 * **expirationDate** - `Date` - *e.g.* `2021-01-15`
 * **categories** - `[String]` - available options: `coffee`, `food`, `accessories`, `equipment`, `premium`
 
-### Employee model:
+### Employee model
 * **firstName** - `String`
 * **lastName** - `String`
 * **startedAt** - `Date` - *e.g.* `2020-10-30`

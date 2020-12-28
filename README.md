@@ -7,7 +7,7 @@ The figure below shows an example of the interaction to find products with appli
 ![Project screen](./src/images/project_screen.jpg)
 
 # Video demo
-[![Watch the video](./src/images/video-demo.jpg)](https://youtu.be/4mdo-zzmWAM)
+[![Watch the video](./src/images/video-demo.jpg)](https://youtu.be/EB7dYGMqWR0)
 
 # Endpoints
 * Endpoints correspond to database collections (see the 'MongoDB' section):

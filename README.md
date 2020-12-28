@@ -6,6 +6,9 @@ The figure below shows an example of the interaction to find products with appli
 
 ![Project screen](./src/images/project_screen.jpg)
 
+# Video demo
+[![Watch the video](./src/images/video-demo.jpg)](https://youtu.be/4mdo-zzmWAM)
+
 # Endpoints
 * Endpoints correspond to database collections (see the 'MongoDB' section):
   * http://localhost:3000/main/1/orders
